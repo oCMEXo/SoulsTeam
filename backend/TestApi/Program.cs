@@ -1,11 +1,14 @@
+using TestApi.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Чтение API key и модели из конфигурации
 string featherlessApiKey = builder.Configuration["Featherless:ApiKey"];
 string model = builder.Configuration["Featherless:Model"];
 
-// Регистрируем сервис как Singleton
+// Регистрируем сервисы
 builder.Services.AddSingleton(new FeatherlessService(featherlessApiKey, model));
+builder.Services.AddSingleton<MongoDbService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

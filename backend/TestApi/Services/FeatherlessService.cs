@@ -2,6 +2,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
+namespace TestApi.Services;
+
 public class FeatherlessService
 {
     private readonly HttpClient _httpClient;
@@ -20,7 +22,7 @@ public class FeatherlessService
     {
         var requestBody = new
         {
-            model = _model,  // Модель берём из конфигурации
+            model = _model,
             messages = new[]
             {
                 new { role = "system", content = "You are a helpful assistant." },
