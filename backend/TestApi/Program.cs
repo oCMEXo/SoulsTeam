@@ -1,26 +1,52 @@
+using TestApi.Services;
 
- using TestApi.Services;
+var builder = WebApplication.CreateBuilder(args);
 
- var builder = WebApplication.CreateBuilder(args);
+// ===== FEATHERLESS =====
+string featherlessApiKey = builder.Configuration["Featherless:ApiKey"]!;
+string model = builder.Configuration["Featherless:Model"]!;
 
- string featherlessApiKey = builder.Configuration["Featherless:ApiKey"]!;
- string model = builder.Configuration["Featherless:Model"]!;
+builder.Services.AddSingleton(new FeatherlessService(featherlessApiKey, model));
 
- builder.Services.AddSingleton(new FeatherlessService(featherlessApiKey, model));
- builder.Services.AddSingleton<MongoDbService>();
- builder.Services.AddSingleton<PersonService>();
+// ===== MONGO =====
+builder.Services.AddSingleton<MongoDbService>();
+builder.Services.AddSingleton<PersonService>();
 
- builder.Services.AddControllers();
- builder.Services.AddEndpointsApiExplorer();
- builder.Services.AddSwaggerGen();
+// ===== CORS =====
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+});
 
- var app = builder.Build();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
- app.UseSwagger();
- app.UseSwaggerUI();
+var app = builder.Build();
 
+// ===== ENABLE CORS =====
+app.UseCors("AllowFrontend");
 
- app.UseHttpsRedirection();
- app.UseAuthorization();
- app.MapControllers();
- app.Run();
+// Swagger only for dev
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// Отключаем HTTPS redirect, чтобы браузер не ругался
+// app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
