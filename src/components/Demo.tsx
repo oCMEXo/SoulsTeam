@@ -112,6 +112,7 @@ export function Demo({ onBackToHome }: DemoProps) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCartNotification, setShowCartNotification] = useState(false);
 
+
   const [results, setResults] = useState<Results | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiSummary, setAiSummary] = useState<string | null>(null);
