@@ -18,16 +18,16 @@ export function Hero({ onTryDemo }: HeroProps) {
           <div className="space-y-10">
             <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-5 py-2.5 border border-blue-500/20">
               <Sparkles className="size-4 text-blue-400" />
-              <span className="text-sm text-blue-300">AI-помощник для умных покупок</span>
+              <span className="text-sm text-blue-300">AI assistant for smarter shopping</span>
             </div>
             
             <div className="space-y-6">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl bg-gradient-to-r from-zinc-100 via-zinc-200 to-zinc-400 bg-clip-text text-transparent leading-tight">
-                Тратьте деньги выгоднее с MoneyMoney
+                Spend your money smarter with MoneyMoney
               </h1>
               <p className="text-lg sm:text-xl text-zinc-400 leading-relaxed">
-                AI анализирует цены в реальном времени и находит более выгодные альтернативы вашим покупкам. 
-                В ресторанах, магазинах одежды, супермаркетах - везде, где вы тратите деньги.
+                AI analyzes prices in real time and finds better alternatives for your purchases. 
+                In restaurants, clothing stores, supermarkets — everywhere you spend money.
               </p>
             </div>
 
@@ -37,19 +37,19 @@ export function Hero({ onTryDemo }: HeroProps) {
                 <div className="p-1.5 rounded-lg bg-green-500/20">
                   <Sparkles className="size-4 text-green-400" />
                 </div>
-                <span className="text-sm text-green-400">Пример экономии</span>
+                <span className="text-sm text-green-400">Example of savings</span>
               </div>
               <div className="space-y-3 pl-1">
                 <div className="flex items-start gap-3">
                   <div className="mt-1.5 size-2 rounded-full bg-zinc-600" />
                   <p className="text-zinc-300 flex-1">
-                    <span className="text-zinc-500">Вы:</span> 3 бургера в McDonald's за <span className="text-zinc-100">10€</span>
+                    <span className="text-zinc-500">You:</span> 3 burgers at McDonald's for <span className="text-zinc-100">10€</span>
                   </p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="mt-1.5 size-2 rounded-full bg-green-500" />
                   <p className="text-green-300 flex-1">
-                    <span className="text-green-400">AI:</span> 4 бургера в Burger King за <span className="text-green-200">10€</span>
+                    <span className="text-green-400">AI:</span> 4 burgers at Burger King for <span className="text-green-200">10€</span>
                   </p>
                 </div>
               </div>
@@ -61,10 +61,10 @@ export function Hero({ onTryDemo }: HeroProps) {
                 className="bg-blue-600 hover:bg-blue-700 text-white h-12 px-8"
                 onClick={onTryDemo}
               >
-                Попробовать демо
+                Try demo
               </Button>
               <Button size="lg" variant="outline" className="border-zinc-700 bg-zinc-900/50 hover:bg-zinc-800 text-zinc-100 h-12 px-8">
-                Как это работает
+                How it works
               </Button>
             </div>
 
@@ -77,7 +77,7 @@ export function Hero({ onTryDemo }: HeroProps) {
                   </div>
                   <span className="text-3xl text-zinc-100">16+</span>
                 </div>
-                <p className="text-sm text-zinc-500">Возраст</p>
+                <p className="text-sm text-zinc-500">Age</p>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
@@ -86,7 +86,7 @@ export function Hero({ onTryDemo }: HeroProps) {
                   </div>
                   <span className="text-3xl text-zinc-100">24/7</span>
                 </div>
-                <p className="text-sm text-zinc-500">Анализ цен</p>
+                <p className="text-sm text-zinc-500">Price analysis</p>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
@@ -95,7 +95,7 @@ export function Hero({ onTryDemo }: HeroProps) {
                   </div>
                   <span className="text-3xl text-zinc-100">AI</span>
                 </div>
-                <p className="text-sm text-zinc-500">Умные советы</p>
+                <p className="text-sm text-zinc-500">Smart tips</p>
               </div>
             </div>
           </div>

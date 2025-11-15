@@ -9,3 +9,4 @@
 
   Run `npm run dev` to start the development server.
   
+  Run `npm install lucide-react` to use SVG icons.

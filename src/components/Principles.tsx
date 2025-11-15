@@ -4,32 +4,32 @@ export function Principles() {
   const principles = [
     {
       icon: Globe,
-      title: "Веб-доступность",
-      description: "Работает на школьных компьютерах, домашних ноутбуках, планшетах — без установки",
+      title: "Web accessibility",
+      description: "Works on school computers, home laptops, tablets — no installation required",
       gradient: "from-blue-500 to-cyan-500"
     },
     {
       icon: Equal,
-      title: "Равные возможности",
-      description: "Не требует банковских данных, не зависит от уровня дохода, подходит семьям с любым фоном",
+      title: "Equal opportunities",
+      description: "Does not require banking data, does not depend on income level, suitable for families with any background",
       gradient: "from-purple-500 to-pink-500"
     },
     {
       icon: Sparkles,
-      title: "Персонализация через ИИ",
-      description: "Адаптирует стиль подсказок, сложность и сценарии под поведение, уверенность и цели пользователя",
+      title: "AI-powered personalization",
+      description: "Adapts the style of hints, complexity, and scenarios to the user’s behavior, confidence, and goals",
       gradient: "from-green-500 to-emerald-500"
     },
     {
       icon: BookOpen,
-      title: "Научная основа",
-      description: "Опирается на исследовательские модели финансового обучения и поведенчески исследования",
+      title: "Scientific foundation",
+      description: "Based on research-backed models of financial education and behavioral studies",
       gradient: "from-orange-500 to-red-500"
     },
     {
       icon: Target,
-      title: "Обучение через практику",
-      description: "Пользователь экспериментирует, совершает ошибки в безопасной среде, анализирует и корректирует стратегию",
+      title: "Learning by doing",
+      description: "The user experiments, makes mistakes in a safe environment, analyzes them and adjusts their strategy",
       gradient: "from-indigo-500 to-purple-500"
     }
   ];
@@ -39,10 +39,10 @@ export function Principles() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center mb-16">
           <h2 className="text-3xl sm:text-4xl mb-6 text-zinc-100">
-            Ключевые принципы платформы
+            Key principles of the platform
           </h2>
           <p className="text-lg text-zinc-400 leading-relaxed">
-            Сделать доступной каждому равную возможность получить персонализированный и эффективный опыт обучения финансам
+            Making it possible for everyone to get an equal opportunity to receive a personalized and effective experience in learning about finance
           </p>
         </div>
 

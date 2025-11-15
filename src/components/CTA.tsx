@@ -22,17 +22,17 @@ export function CTA() {
             <div className="mx-auto max-w-3xl text-center space-y-10">
               <div className="space-y-6">
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl bg-gradient-to-r from-zinc-100 via-blue-200 to-purple-200 bg-clip-text text-transparent leading-tight">
-                  Начните свой путь к финансовой уверенности
+                  Start your journey to financial confidence
                 </h2>
                 <p className="text-lg text-zinc-300 leading-relaxed">
-                  Присоединяйтесь к новому поколению финансово грамотных людей. 
-                  Безопасная среда для обучения и практики доступна прямо сейчас.
+                  Join the new generation of financially literate people. 
+                  A safe space for learning and practice is available right now.
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white group h-12 px-8">
-                  Начать бесплатно
+                  Start for free
                   <ArrowRight className="ml-2 size-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button 
@@ -41,7 +41,7 @@ export function CTA() {
                   className="border-zinc-600 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-100 h-12 px-8"
                 >
                   <Mail className="mr-2 size-4" />
-                  Связаться с нами
+                  Contact us
                 </Button>
               </div>
 
@@ -49,16 +49,16 @@ export function CTA() {
               <div className="pt-10 border-t border-zinc-800">
                 <div className="grid grid-cols-3 gap-8 text-center">
                   <div className="space-y-2">
-                    <div className="text-3xl text-zinc-100">Бесплатно</div>
-                    <p className="text-sm text-zinc-500">Доступ без ограничений</p>
+                    <div className="text-3xl text-zinc-100">Free</div>
+                    <p className="text-sm text-zinc-500">Unlimited access</p>
                   </div>
                   <div className="space-y-2">
-                    <div className="text-3xl text-zinc-100">Без установки</div>
-                    <p className="text-sm text-zinc-500">Работает в браузере</p>
+                    <div className="text-3xl text-zinc-100">No installation</div>
+                    <p className="text-sm text-zinc-500">Works in your browser</p>
                   </div>
                   <div className="space-y-2">
-                    <div className="text-3xl text-zinc-100">Безопасно</div>
-                    <p className="text-sm text-zinc-500">Без банковских данных</p>
+                    <div className="text-3xl text-zinc-100">Secure</div>
+                    <p className="text-sm text-zinc-500">No banking details required</p>
                   </div>
                 </div>
               </div>
@@ -69,7 +69,7 @@ export function CTA() {
         {/* Footer */}
         <footer className="mt-16 pt-8 border-t border-zinc-800">
           <p className="text-center text-sm text-zinc-500">
-            © 2025 Платформа финансовой грамотности. Создано для равных возможностей в образовании.
+            © 2025 Financial literacy platform. Created to bring equal opportunities in education.
           </p>
         </footer>
       </div>

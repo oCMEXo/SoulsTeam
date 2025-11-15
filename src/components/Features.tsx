@@ -5,33 +5,33 @@ export function Features() {
   const features = [
     {
       icon: Brain,
-      title: "ИИ-персонализация",
-      description: "Адаптивный искусственный интеллект анализирует ваше поведение и подбирает оптимальные сценарии обучения"
+      title: "AI personalization",
+      description: "An adaptive AI analyzes your behavior and selects optimal learning scenarios"
     },
     {
       icon: Gamepad2,
-      title: "Интерактивные симуляции",
-      description: "Реалистичные жизненные сценарии, где можно экспериментировать без финансовых рисков"
+      title: "Interactive simulations",
+      description: "Real-life scenarios where you can experiment without financial risks"
     },
     {
       icon: Shield,
-      title: "Безопасная среда",
-      description: "Учитесь на ошибках в контролируемом пространстве без реальных последствий"
+      title: "Safe environment",
+      description: "Learn from mistakes in a controlled space without real-world consequences"
     },
     {
       icon: BarChart3,
-      title: "Отслеживание прогресса",
-      description: "Визуализация развития навыков и достижений на пути к финансовой грамотности"
+      title: "Progress tracking",
+      description: "Visualizes your skill development and achievements on the path to financial literacy"
     },
     {
       icon: Users,
-      title: "Для всех возрастов",
-      description: "От подростков до взрослых — каждый найдёт подходящий уровень сложности"
+      title: "For all ages",
+      description: "From teenagers to adults — everyone can find the right level of difficulty"
     },
     {
       icon: Lightbulb,
-      title: "Научный подход",
-      description: "Методология основана на исследованиях в области образования и поведенческой экономики"
+      title: "Evidence-based approach",
+      description: "The methodology is based on research in education and behavioral economics"
     }
   ];
 
@@ -55,10 +55,10 @@ export function Features() {
           <div className="space-y-10 order-1 lg:order-2">
             <div className="space-y-4">
               <h2 className="text-3xl sm:text-4xl text-zinc-100">
-                Возможности платформы
+                Platform capabilities
               </h2>
               <p className="text-lg text-zinc-400 leading-relaxed">
-                Комплексный подход к развитию финансовых навыков через современные технологии и научные методики
+                A comprehensive approach to developing financial skills through modern technology and evidence-based methods
               </p>
             </div>
 

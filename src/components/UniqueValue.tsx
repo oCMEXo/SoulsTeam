@@ -5,37 +5,37 @@ export function UniqueValue() {
   const values = [
     {
       icon: Sparkles,
-      title: "Полноценная персонализация обучения",
-      description: "Платформа подстраивается под пользователя, а не наоборот",
-      badge: "ИИ-адаптация",
+      title: "Comprehensive learning personalization",
+      description: "The platform adapts to the user, not the other way around",
+      badge: "AI adaptation",
       color: "blue"
     },
     {
       icon: MapPin,
-      title: "Сценарии на основе жизненных переходов",
-      description: "От первой покупки до планирования будущего — обучение приближено к реальным ситуациям",
-      badge: "Реалистичность",
+      title: "Scenarios based on life transitions",
+      description: "From the first purchase to future planning, learning is grounded in real-life situations",
+      badge: "Realism",
       color: "purple"
     },
     {
       icon: Heart,
-      title: "Инклюзивность и доступность",
-      description: "Подходит тем, у кого нет поддержки семьи или опыта в финансовых вопросах",
-      badge: "Для всех",
+      title: "Inclusivity and accessibility",
+      description: "Suitable for those who lack family support or experience in financial matters",
+      badge: "For everyone",
       color: "pink"
     },
     {
       icon: Users,
-      title: "Для молодых и взрослых",
-      description: "Система навыков и сценариев масштабируется и остаётся релевантной для всех возрастов",
-      badge: "Универсально",
+      title: "For young people and adults",
+      description: "The system of skills and scenarios scales and remains relevant for all ages",
+      badge: "Universal",
       color: "green"
     },
     {
       icon: School,
-      title: "Разные контексты обучения",
-      description: "Подходит для школ, домашнего использования, образовательных программ, работы тьюторов",
-      badge: "Гибкость",
+      title: "Different learning contexts",
+      description: "Suitable for schools, home use, educational programs, and tutors",
+      badge: "Flexibility",
       color: "orange"
     }
   ];
@@ -54,13 +54,13 @@ export function UniqueValue() {
         <div className="mx-auto max-w-3xl text-center mb-16">
           <div className="inline-flex items-center gap-2 rounded-full bg-zinc-800/50 px-5 py-2.5 mb-6 border border-zinc-700">
             <Sparkles className="size-4 text-zinc-400" />
-            <span className="text-sm text-zinc-300">Уникальность</span>
+            <span className="text-sm text-zinc-300">Uniqueness</span>
           </div>
           <h2 className="text-3xl sm:text-4xl mb-6 text-zinc-100">
-            Что делает платформу уникальной
+            What makes the platform unique
           </h2>
           <p className="text-lg text-zinc-400 leading-relaxed">
-            Инновационный подход к финансовому образованию с фокусом на персонализацию и практический опыт
+            An innovative approach to financial education with a focus on personalization and hands-on experience
           </p>
         </div>
 

@@ -5,49 +5,49 @@ import { ShoppingCart, Search, Lightbulb, Check, ArrowRight, TrendingDown } from
 export function HowItWorks() {
   const examples = [
     {
-      category: "Еда",
+      category: "Food",
       before: {
         title: "McDonald's",
-        items: "3 бургера",
+        items: "3 burgers",
         price: "10 €",
         provider: "Wolt"
       },
       after: {
         title: "Burger King",
-        items: "4 бургера",
+        items: "4 burgers",
         price: "10 €",
         provider: "Bolt Food",
-        savings: "25% больше еды"
+        savings: "25% more food"
       },
       color: "orange"
     },
     {
-      category: "Одежда",
+      category: "Clothing",
       before: {
-        title: "Магазин A",
-        items: "Футболка",
+        title: "Store A",
+        items: "T-shirt",
         price: "25 €"
       },
       after: {
-        title: "Магазин B",
-        items: "Футболка + носки",
+        title: "Store B",
+        items: "T-shirt + socks",
         price: "25 €",
-        savings: "Экономия 5 €"
+        savings: "Saving 5 €"
       },
       color: "blue"
     },
     {
-      category: "Продукты",
+      category: "Groceries",
       before: {
-        title: "Супермаркет 1",
-        items: "Корзина продуктов",
+        title: "Supermarket 1",
+        items: "Shopping basket",
         price: "50 €"
       },
       after: {
-        title: "Супермаркет 2",
-        items: "Та же корзина",
+        title: "Supermarket 2",
+        items: "Same basket",
         price: "43 €",
-        savings: "Экономия 7 €"
+        savings: "Saving 7 €"
       },
       color: "green"
     }
@@ -56,26 +56,26 @@ export function HowItWorks() {
   const steps = [
     {
       icon: ShoppingCart,
-      title: "Вы собираетесь что-то купить",
-      description: "Заказываете еду в Wolt/Bolt, выбираете одежду онлайн или покупаете продукты",
+      title: "You are about to buy something",
+      description: "You order food via Wolt/Bolt, choose clothes online or buy groceries",
       color: "from-blue-500 to-cyan-500"
     },
     {
       icon: Search,
-      title: "AI анализирует в реальном времени",
-      description: "Система сканирует цены в других заведениях и магазинах на аналогичные товары",
+      title: "AI analyzes in real time",
+      description: "The system scans prices in other places and stores for similar products",
       color: "from-purple-500 to-pink-500"
     },
     {
       icon: Lightbulb,
-      title: "Получаете умные рекомендации",
-      description: "AI показывает более выгодные альтернативы: где можно купить больше или дешевле",
+      title: "You get smart recommendations",
+      description: "AI shows better alternatives: where you can buy more or cheaper",
       color: "from-green-500 to-emerald-500"
     },
     {
       icon: Check,
-      title: "Принимаете решение",
-      description: "Выбираете: купить как планировали или воспользоваться более выгодным предложением",
+      title: "You make the decision",
+      description: "You choose: buy as planned or use the better offer",
       color: "from-orange-500 to-red-500"
     }
   ];
@@ -93,19 +93,19 @@ export function HowItWorks() {
         <div className="mx-auto max-w-3xl text-center mb-16">
           <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-green-500/10 to-emerald-500/10 px-5 py-2.5 mb-6 border border-green-500/20">
             <Lightbulb className="size-4 text-green-400" />
-            <span className="text-sm text-green-300">Как это работает</span>
+            <span className="text-sm text-green-300">How it works</span>
           </div>
           <h2 className="text-3xl sm:text-4xl mb-6 text-zinc-100">
-            AI находит более выгодные варианты в реальном времени
+            AI finds better options in real time
           </h2>
           <p className="text-lg text-zinc-400 leading-relaxed">
-            Система анализирует цены в разных заведениях и магазинах, чтобы помочь вам потратить деньги разумнее
+            The system analyzes prices in different places and stores to help you spend money smarter
           </p>
         </div>
 
         {/* Examples */}
         <div className="mb-24">
-          <h3 className="text-2xl text-zinc-100 mb-12 text-center">Примеры экономии</h3>
+          <h3 className="text-2xl text-zinc-100 mb-12 text-center">Examples of savings</h3>
           <div className="grid gap-8 lg:grid-cols-3">
             {examples.map((example, index) => {
               const colors = colorClasses[example.color as keyof typeof colorClasses];
@@ -122,14 +122,14 @@ export function HowItWorks() {
                           {example.category}
                         </Badge>
                         <div className={`text-xs uppercase tracking-wider ${colors.text} opacity-60`}>
-                          Сравнение
+                          Comparison
                         </div>
                       </div>
 
                       {/* Before - Your choice */}
                       <div className={`relative p-6 rounded-xl border ${colors.border} ${colors.bg} overflow-hidden`}>
                         <div className="absolute top-2 right-2 text-xs text-zinc-500 uppercase tracking-wider">
-                          Обычно
+                          Usually
                         </div>
                         <div className="space-y-4 pt-2">
                           <div className="space-y-2">
@@ -137,7 +137,7 @@ export function HowItWorks() {
                             <p className="text-sm text-zinc-400">{example.before.items}</p>
                             {example.before.provider && (
                               <div className="inline-flex items-center gap-1.5 text-xs text-zinc-500 bg-zinc-800/50 px-2 py-1 rounded">
-                                <span>через</span>
+                                <span>via</span>
                                 <span className="text-zinc-400">{example.before.provider}</span>
                               </div>
                             )}
@@ -160,7 +160,7 @@ export function HowItWorks() {
                       <div className={`relative p-6 rounded-xl border-2 ${colors.border} bg-gradient-to-br from-zinc-900 to-zinc-900/50 overflow-hidden shadow-lg`}>
                         <div className="absolute top-2 right-2 text-xs uppercase tracking-wider flex items-center gap-1.5">
                           <div className={`size-1.5 rounded-full ${colors.text.replace('text-', 'bg-')} animate-pulse`} />
-                          <span className={colors.text}>AI рекомендует</span>
+                          <span className={colors.text}>AI recommends</span>
                         </div>
                         <div className="space-y-4 pt-2">
                           <div className="space-y-2">
@@ -168,7 +168,7 @@ export function HowItWorks() {
                             <p className="text-sm text-zinc-400">{example.after.items}</p>
                             {example.after.provider && (
                               <div className="inline-flex items-center gap-1.5 text-xs text-zinc-500 bg-zinc-800/50 px-2 py-1 rounded">
-                                <span>через</span>
+                                <span>via</span>
                                 <span className="text-zinc-400">{example.after.provider}</span>
                               </div>
                             )}
@@ -187,7 +187,7 @@ export function HowItWorks() {
                             <span className={`${colors.text}`}>{example.after.savings}</span>
                           </div>
                           <div className={`px-3 py-1 rounded-full ${colors.badge} ${colors.text} text-xs uppercase tracking-wider`}>
-                            Выгода
+                            Savings
                           </div>
                         </div>
                       </div>
@@ -201,7 +201,7 @@ export function HowItWorks() {
 
         {/* Steps */}
         <div className="mb-20">
-          <h3 className="text-2xl text-zinc-100 mb-10 text-center">Процесс работы</h3>
+          <h3 className="text-2xl text-zinc-100 mb-10 text-center">Process</h3>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, index) => {
               const Icon = step.icon;
@@ -235,11 +235,10 @@ export function HowItWorks() {
         {/* Integration highlight */}
         <div className="p-10 rounded-2xl bg-gradient-to-r from-blue-950/30 via-purple-950/30 to-pink-950/30 border border-zinc-800">
           <div className="text-center space-y-6">
-            <h3 className="text-2xl text-zinc-100">Интеграция с популярными сервисами</h3>
+            <h3 className="text-2xl text-zinc-100">Integration with popular services</h3>
             <p className="text-zinc-400 max-w-3xl mx-auto leading-relaxed">
-              Работает с Wolt, Bolt Food и другими сервисами доставки. Анализирует цены в магазинах одежды, 
-              супермаркетах и любых других торговых точках. AI в реальном времени находит лучшие предложения, 
-              пока вы делаете заказ.
+              Works with Wolt, Bolt Food and other delivery services. Analyzes prices in clothing stores, 
+              supermarkets and any other points of sale. AI finds the best deals in real time while you are placing an order.
             </p>
             <div className="flex flex-wrap justify-center gap-3 pt-4">
               <Badge variant="outline" className="px-5 py-2.5 bg-zinc-800/50 border-zinc-700 text-zinc-300">
@@ -249,13 +248,13 @@ export function HowItWorks() {
                 Bolt Food
               </Badge>
               <Badge variant="outline" className="px-5 py-2.5 bg-zinc-800/50 border-zinc-700 text-zinc-300">
-                Магазины одежды
+                Clothing stores
               </Badge>
               <Badge variant="outline" className="px-5 py-2.5 bg-zinc-800/50 border-zinc-700 text-zinc-300">
-                Супермаркеты
+                Supermarkets
               </Badge>
               <Badge variant="outline" className="px-5 py-2.5 bg-zinc-800/50 border-zinc-700 text-zinc-300">
-                И многое другое
+                And much more
               </Badge>
             </div>
           </div>
