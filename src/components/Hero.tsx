@@ -75,7 +75,7 @@ export function Hero({ onTryDemo }: HeroProps) {
                   <div className="p-2 rounded-lg bg-blue-500/10">
                     <ShoppingBag className="size-5 text-blue-400" />
                   </div>
-                  <span className="text-3xl text-zinc-100">16+</span>
+                  <span className="text-3xl text-zinc-100">12+</span>
                 </div>
 
                 <p className="text-sm text-zinc-500">Age</p>
