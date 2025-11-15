@@ -8,8 +8,8 @@ builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
 // Featherless
-string featherlessApiKey = builder.Configuration["Featherless:ApiKey"]!;
-string model = builder.Configuration["Featherless:Model"]!;
+string featherlessApiKey = builder.Configuration["Featherless:ApiKey"] ?? "";
+string model = builder.Configuration["Featherless:Model"] ?? "";
 
 builder.Services.AddSingleton<FeatherlessService>(sp =>
 {
@@ -53,7 +53,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// ✅ Привязка к порту Cloud Run
+// ✅ Привязываем Kestrel к порту Cloud Run
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://0.0.0.0:{port}");
 
@@ -63,9 +63,10 @@ app.UseRouting();
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 
-// ✅ Простой health-check на корне
+// ✅ Health-check на корне
 app.MapGet("/", () => Results.Ok("API is running"));
 
+// Контроллеры
 app.MapControllers();
 
 app.Run();
