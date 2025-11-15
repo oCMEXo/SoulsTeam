@@ -195,21 +195,24 @@ Filters: ${filtersText}
 
       console.log("Sending prompt:", prompt);
 
-      const res = await fetch(
-          `${API_BASE}/ai/ask?prompt=${encodeURIComponent(prompt)}`
-      );
+const res = await fetch(
+  `${API_BASE}/ai/ask?prompt=${encodeURIComponent(prompt)}`
+);
 
-      if (!res.ok) {
-        const text = await res.text();
-        console.error("Server error:", res.status, text);
-        setAiError(`Server error: ${res.status}`);
-        setCurrentStep("results");
-        return;
-      }
+// временный лог
+const rawText = await res.text();
+console.log("RAW RESPONSE TEXT:", rawText);
 
-      const data: AiResponse = await res.json();
-      console.log("AI raw response:", data);
-      setRawResponse(data);
+// если статус не ок – покажем это и выйдем
+if (!res.ok) {
+  setAiError(`Server error: ${res.status} – ${rawText}`);
+  setCurrentStep("results");
+  return;
+}
+
+// если всё ок – ещё раз распарсим как JSON
+const data: AiResponse = JSON.parse(rawText);
+console.log("AI parsed response:", data);
 
       if (!data || data.original === undefined) {
         console.error("Missing 'original' in response:", data);
