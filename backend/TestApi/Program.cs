@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins("http://localhost:3000", "http://localhost:5173") // Добавлен порт Vite
+                .WithOrigins("http://localhost:3000", "http://localhost:5173","http://localhost:3001") // Добавлен порт Vite
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
