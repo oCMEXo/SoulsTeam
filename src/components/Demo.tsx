@@ -180,39 +180,40 @@ export function Demo({ onBackToHome }: DemoProps) {
     setAiSummary(null);
     setRawResponse(null);
 
-    try {
-      const filtersText =
-          selectedFilters.length > 0
-              ? selectedFilters.join(", ")
-              : "no additional filters";
+try {
+  const filtersText =
+    selectedFilters.length > 0
+      ? selectedFilters.join(", ")
+      : "no additional filters";
 
-      const prompt = `
+  const prompt = `
 Category: ${selectedCategory}
 Budget: ${budget || "-"} €
 User wants: ${searchQuery || "-"}
 Filters: ${filtersText}
 `.trim();
 
-      console.log("Sending prompt:", prompt);
+  console.log("Sending prompt:", prompt);
+  console.log("API_BASE =", API_BASE);
 
-const res = await fetch(
-  `${API_BASE}/ai/ask?prompt=${encodeURIComponent(prompt)}`
-);
+  const url = `${API_BASE.replace(/\/+$/, "")}/ai/ask?prompt=${encodeURIComponent(prompt)}`;
+  console.log("Request URL =", url);
 
-// временный лог
-const rawText = await res.text();
-console.log("RAW RESPONSE TEXT:", rawText);
+  const res = await fetch(url);
 
-// если статус не ок – покажем это и выйдем
-if (!res.ok) {
-  setAiError(`Server error: ${res.status} – ${rawText}`);
-  setCurrentStep("results");
-  return;
-}
+  const rawText = await res.text();
+  console.log("RAW RESPONSE TEXT:", rawText);
 
-// если всё ок – ещё раз распарсим как JSON
-const data: AiResponse = JSON.parse(rawText);
-console.log("AI parsed response:", data);
+  if (!res.ok) {
+    console.error("Server error:", res.status, rawText);
+    setAiError(`Server error: ${res.status} – ${rawText}`);
+    setCurrentStep("results");
+    return;
+  }
+
+  const data: AiResponse = JSON.parse(rawText);
+  console.log("AI parsed response:", data);
+  setRawResponse(data);
 
       if (!data || data.original === undefined) {
         console.error("Missing 'original' in response:", data);
