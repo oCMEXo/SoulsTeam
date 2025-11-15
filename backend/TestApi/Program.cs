@@ -2,11 +2,21 @@ using TestApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ===== LOGGING =====
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
 // ===== FEATHERLESS =====
 string featherlessApiKey = builder.Configuration["Featherless:ApiKey"]!;
 string model = builder.Configuration["Featherless:Model"]!;
 
-builder.Services.AddSingleton(new FeatherlessService(featherlessApiKey, model));
+// ИСПРАВЛЕНО: Правильная регистрация с ILogger
+builder.Services.AddSingleton<FeatherlessService>(serviceProvider =>
+{
+    var logger = serviceProvider.GetRequiredService<ILogger<FeatherlessService>>();
+    return new FeatherlessService(featherlessApiKey, model, logger);
+});
 
 // ===== MONGO =====
 builder.Services.AddSingleton<MongoDbService>();
@@ -19,7 +29,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins("http://localhost:3000")
+                .WithOrigins("http://localhost:3000", "http://localhost:5173") // Добавлен порт Vite
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
@@ -28,12 +38,19 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(); // Добавлен Swagger для тестирования API
 
 var app = builder.Build();
 
+// ===== SWAGGER (только в Development) =====
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 // ===== ENABLE CORS =====
 app.UseCors("AllowFrontend");
-
 
 // Отключаем HTTPS redirect, чтобы браузер не ругался
 // app.UseHttpsRedirection();
