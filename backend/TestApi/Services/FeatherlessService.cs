@@ -46,7 +46,7 @@ public class FeatherlessService
 }
 
 Только JSON. Без markdown, текста до или после.
-и указывай где это можно купить
+и указывай где это можно купить - конкретные магазины или доставки
 ";
 
     public FeatherlessService(string apiKey, string model, ILogger<FeatherlessService> logger)
