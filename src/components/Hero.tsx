@@ -23,7 +23,7 @@ export function Hero({ onTryDemo }: HeroProps) {
             
             <div className="space-y-6">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl bg-gradient-to-r from-zinc-100 via-zinc-200 to-zinc-400 bg-clip-text text-transparent leading-tight">
-                Spend your money smarter with MoneyMoney
+                Spend your money smarter with MoneyCoach
               </h1>
               <p className="text-lg sm:text-xl text-zinc-400 leading-relaxed">
                 AI analyzes prices in real time and finds better alternatives for your purchases. 

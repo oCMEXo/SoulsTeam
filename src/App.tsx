@@ -25,7 +25,7 @@ export default function App() {
       <Principles />
       <UniqueValue />
       <Features />
-      <CTA />
+      <CTA onTryDemo={() => setShowDemo(true)}/>
 
     </div>
   );

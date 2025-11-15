@@ -60,7 +60,6 @@ interface ResultAlternative {
   filterMatch?: string;
 }
 
-// форма original/alternative, которую шлёт AI
 interface AiOriginalObject {
   name?: string;
   items?: string;
@@ -83,11 +82,6 @@ interface AiAlternativeObject {
   filterMatch?: string;
 }
 
-/**
- * Поддерживает оба варианта:
- * 1) { original: "строка", alternatives: [...] }
- * 2) { summary: "строка", original: {..}, alternatives: [...] }
- */
 interface AiResponse {
   summary?: string;
   original?: string | AiOriginalObject;
@@ -99,15 +93,7 @@ interface Results {
   alternatives: ResultAlternative[];
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-const API_BASE = import.meta.env.VITE_API_BASE_URL || window.location.origin;
-=======
-const API_BASE = "http://localhost:5032";
->>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
-=======
-const API_BASE = "http://localhost:5032";
->>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+const API_BASE = "http://localhost:8080";
 
 export function Demo({ onBackToHome }: DemoProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -120,17 +106,16 @@ export function Demo({ onBackToHome }: DemoProps) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCartNotification, setShowCartNotification] = useState(false);
 
-
   const [results, setResults] = useState<Results | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [rawResponse, setRawResponse] = useState<AiResponse | null>(null);
 
   const categories = [
-    { id: "food", emoji: "🍔", label: "Еда" },
-    { id: "groceries", emoji: "🛒", label: "Продукты" },
-    { id: "clothes", emoji: "👕", label: "Одежда" },
-    { id: "coffee", emoji: "☕", label: "Кофе" },
+    { id: "food", emoji: "🍔", label: "Food" },
+    { id: "groceries", emoji: "🛒", label: "Groceries" },
+    { id: "clothes", emoji: "👕", label: "Clothes" },
+    { id: "coffee", emoji: "☕", label: "Coffee" },
   ];
 
   const filters: {
@@ -142,31 +127,31 @@ export function Demo({ onBackToHome }: DemoProps) {
     {
       id: "healthy",
       emoji: "🥗",
-      label: "Здоровое питание",
+      label: "Healthy",
       categories: ["food", "groceries", "coffee"],
     },
     {
       id: "fast",
       emoji: "⚡",
-      label: "Фастфуд",
+      label: "Fast Food",
       categories: ["food", "coffee"],
     },
     {
       id: "traditional",
       emoji: "🍲",
-      label: "Традиционное",
+      label: "Traditional",
       categories: ["food", "groceries"],
     },
     {
       id: "budget",
       emoji: "💰",
-      label: "Экономия",
+      label: "Budget",
       categories: ["food", "groceries", "clothes", "coffee"],
     },
     {
       id: "premium",
       emoji: "⭐",
-      label: "Премиум",
+      label: "Premium",
       categories: ["food", "clothes", "coffee"],
     },
   ];
@@ -184,7 +169,7 @@ export function Demo({ onBackToHome }: DemoProps) {
     );
   };
 
-  // ---------- AI запрос ----------
+  // ---------- AI REQUEST ----------
 
   const handleSearch = async () => {
     if (!selectedCategory) return;
@@ -195,128 +180,76 @@ export function Demo({ onBackToHome }: DemoProps) {
     setAiSummary(null);
     setRawResponse(null);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-try {
-  const filtersText =
-    selectedFilters.length > 0
-      ? selectedFilters.join(", ")
-      : "no additional filters";
-=======
     try {
       const filtersText =
           selectedFilters.length > 0
               ? selectedFilters.join(", ")
-<<<<<<< HEAD
               : "no additional filters";
->>>>>>> parent of f3fba67 (Update Demo.tsx)
 
       const prompt = `
 Category: ${selectedCategory}
 Budget: ${budget || "-"} €
 User wants: ${searchQuery || "-"}
 Filters: ${filtersText}
-=======
-    try {
-      const filtersText =
-          selectedFilters.length > 0
-              ? selectedFilters.join(", ")
-              : "без дополнительных фильтров";
-
-      const prompt = `
-=======
-              : "без дополнительных фильтров";
-
-      const prompt = `
->>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
-Категория: ${selectedCategory}
-Бюджет: ${budget || "-"} €
-Что ищет пользователь: ${searchQuery || "-"}
-Фильтры: ${filtersText}
-<<<<<<< HEAD
->>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
-=======
->>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
 `.trim();
 
       console.log("Sending prompt:", prompt);
 
-const res = await fetch(
-  `${API_BASE}/ai/ask?prompt=${encodeURIComponent(prompt)}`
-);
+      const res = await fetch(
+          `${API_BASE}/ai/ask?prompt=${encodeURIComponent(prompt)}`
+      );
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  const res = await fetch(url);
-=======
       if (!res.ok) {
         const text = await res.text();
         console.error("Server error:", res.status, text);
-        setAiError(`Ошибка сервера: ${res.status}`);
+        setAiError(`Server error: ${res.status}`);
         setCurrentStep("results");
         return;
       }
->>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
-=======
-// временный лог
-const rawText = await res.text();
-console.log("RAW RESPONSE TEXT:", rawText);
->>>>>>> parent of f3fba67 (Update Demo.tsx)
 
-// если статус не ок – покажем это и выйдем
-if (!res.ok) {
-  setAiError(`Server error: ${res.status} – ${rawText}`);
-  setCurrentStep("results");
-  return;
-}
-
-// если всё ок – ещё раз распарсим как JSON
-const data: AiResponse = JSON.parse(rawText);
-console.log("AI parsed response:", data);
+      const data: AiResponse = await res.json();
+      console.log("AI raw response:", data);
+      setRawResponse(data);
 
       if (!data || data.original === undefined) {
         console.error("Missing 'original' in response:", data);
-        setAiError("AI не вернул информацию об оригинальном варианте");
+        setAiError("AI did not return original item information");
         setCurrentStep("results");
         return;
       }
 
-      // --- 1. Текст-саммари ---
+      // --- Summary text ---
       if (typeof data.original === "string") {
-        // старый формат: весь текст в original
         setAiSummary(data.original);
       } else {
-        // новый формат: summary отдельно
         setAiSummary(data.summary || null);
       }
 
-      // --- 2. Карточка "Ваш выбор" ---
+      // --- User choice card ---
       let original: ResultOriginal;
 
       if (typeof data.original === "string") {
-        // original как текст — подставляем свои данные
         const nameFromCategory =
             selectedCategory === "food"
-                ? "Вы хотите поесть"
+                ? "You want to eat"
                 : selectedCategory === "coffee"
-                    ? "Вы хотите кофе"
+                    ? "You want coffee"
                     : selectedCategory === "groceries"
-                        ? "Вы хотите купить продукты"
-                        : "Ваш выбор";
+                        ? "You want groceries"
+                        : "Your choice";
 
         original = {
           name: searchQuery.trim() || nameFromCategory,
           items:
-              `Бюджет: ${budget || "-"} ` +
-              (selectedFilters.length ? ` • Фильтры: ${filtersText}` : ""),
+              `Budget: ${budget || "-"} ` +
+              (selectedFilters.length ? `• Filters: ${filtersText}` : ""),
           price: budget || "0",
           location: "—",
           deliveryTime: "—",
         };
       } else {
-        // original — объект от AI
         original = {
-          name: data.original.name || "Ваш выбор",
+          name: data.original.name || "Your choice",
           items: data.original.items || "",
           price: String(data.original.price ?? "0"),
           location: data.original.location || "—",
@@ -328,7 +261,7 @@ console.log("AI parsed response:", data);
           original.price.toString().replace(",", ".")
       );
 
-      // --- 3. Альтернативы ---
+      // --- Alternatives ---
       let alternatives: ResultAlternative[] = [];
 
       if (Array.isArray(data.alternatives) && data.alternatives.length > 0) {
@@ -356,15 +289,15 @@ console.log("AI parsed response:", data);
               }
 
               return {
-                name: a.name || `Вариант ${i + 1}`,
+                name: a.name || `Option ${i + 1}`,
                 items: a.items || "",
                 price: priceStr,
                 location: a.location || "—",
                 deliveryTime: a.deliveryTime || "—",
                 extraBenefit: a.extraBenefit,
-                rating:
-                    typeof a.rating === "number" ? a.rating : undefined,
-                savings: (a.savings !== undefined
+                rating: typeof a.rating === "number" ? a.rating : undefined,
+                savings: (
+                    a.savings !== undefined
                         ? parseFloat(String(a.savings).replace(",", "."))
                         : savingsNum
                 ).toFixed(2),
@@ -374,7 +307,6 @@ console.log("AI parsed response:", data);
               };
             });
 
-        // если никто не помечен как рекомендованный — выберем по минимальной цене
         if (alternatives.length > 0 && !alternatives.some((a) => a.isRecommended)) {
           const bestIndex = alternatives.reduce((bestIdx, alt, idx) => {
             const price = parseFloat(alt.price.replace(",", "."));
@@ -396,8 +328,8 @@ console.log("AI parsed response:", data);
     } catch (e) {
       console.error("Fetch/parse error:", e);
       setAiError(
-          `Не удалось обработать ответ AI: ${
-              e instanceof Error ? e.message : "неизвестная ошибка"
+          `Failed to process AI response: ${
+              e instanceof Error ? e.message : "unknown error"
           }`
       );
       setCurrentStep("results");
@@ -416,7 +348,7 @@ console.log("AI parsed response:", data);
     setRawResponse(null);
   };
 
-  // ---------- корзина ----------
+  // ---------- Cart ----------
 
   const addToCart = (item: CartItem) => {
     const existingItem = cart.find((cartItem) => cartItem.id === item.id);
@@ -486,14 +418,14 @@ console.log("AI parsed response:", data);
                   <div>
                     <h1 className="text-xl">MoneyMoney Demo</h1>
                     <p className="text-xs text-zinc-500">
-                      AI находит выгоду для вас
+                      AI finds savings for you
                     </p>
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/30">
-                  Демо режим
+                  Demo Mode
                 </Badge>
                 {cart.length > 0 && (
                     <button
@@ -513,25 +445,25 @@ console.log("AI parsed response:", data);
 
         {/* Main Content */}
         <div className="mx-auto max-w-5xl px-6 py-12">
-          {/* Шаг поиска */}
+          {/* Step: Search */}
           {currentStep === "search" && (
               <div className="space-y-8 animate-in fade-in duration-500">
                 <div className="text-center space-y-4">
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20">
                     <Sparkles className="size-4 text-blue-400" />
                     <span className="text-sm text-blue-300">
-                  Попробуйте AI-советник прямо сейчас
+                  Try AI assistant now
                 </span>
                   </div>
                   <h2 className="text-3xl sm:text-4xl text-zinc-100">
-                    Что вы хотите купить?
+                    What do you want to buy?
                   </h2>
                   <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-                    Выберите категорию, и AI найдет более выгодные варианты для вас
+                    Choose a category and AI will find the best options for you
                   </p>
                 </div>
 
-                {/* Категории */}
+                {/* Categories */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
                   {categories.map((cat) => (
                       <button
@@ -551,18 +483,18 @@ console.log("AI parsed response:", data);
 
                 {selectedCategory && (
                     <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in duration-300">
-                      {/* Бюджет и запрос */}
+                      {/* Budget & Query */}
                       <Card className="bg-zinc-900/50 border-zinc-800 p-6">
                         <div className="space-y-4">
                           <div>
                             <label className="text-sm text-zinc-400 mb-2 block">
-                              Сколько хотите потратить?
+                              Your budget
                             </label>
                             <div className="relative">
                               <Euro className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-zinc-500" />
                               <input
                                   type="number"
-                                  placeholder="Например: 10"
+                                  placeholder="Example: 10"
                                   value={budget}
                                   onChange={(e) => setBudget(e.target.value)}
                                   className="w-full h-14 pl-12 pr-4 bg-zinc-800/50 border-2 border-zinc-700 rounded-xl text-zinc-100 placeholder:text-zinc-600 outline-none focus:border-blue-500 transition-colors"
@@ -572,20 +504,20 @@ console.log("AI parsed response:", data);
 
                           <div>
                             <label className="text-sm text-zinc-400 mb-2 block">
-                              Что именно ищете?
+                              What exactly are you looking for?
                             </label>
                             <div className="flex items-center gap-3">
                               <Search className="size-5 text-zinc-500" />
                               <input
                                   type="text"
-                                  placeholder={`Например: ${
+                                  placeholder={`Example: ${
                                       selectedCategory === "food"
-                                          ? "Бургеры"
+                                          ? "Burgers"
                                           : selectedCategory === "coffee"
-                                              ? "Латте"
+                                              ? "Latte"
                                               : selectedCategory === "groceries"
-                                                  ? "Овощи и фрукты"
-                                                  : "Футболка"
+                                                  ? "Vegetables"
+                                                  : "T-shirt"
                                   }`}
                                   value={searchQuery}
                                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -596,11 +528,11 @@ console.log("AI parsed response:", data);
                         </div>
                       </Card>
 
-                      {/* Фильтры */}
+                      {/* Filters */}
                       {getAvailableFilters().length > 0 && (
                           <Card className="bg-zinc-900/50 border-zinc-800 p-6">
                             <label className="text-sm text-zinc-400 mb-3 block">
-                              Выберите предпочтения
+                              Preferences
                             </label>
                             <div className="flex flex-wrap gap-2">
                               {getAvailableFilters().map((filter) => (
@@ -621,20 +553,20 @@ console.log("AI parsed response:", data);
                           </Card>
                       )}
 
-                      {/* Кнопка поиска */}
+                      {/* Search button */}
                       <Button
                           onClick={handleSearch}
                           disabled={!budget}
                           className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white h-14 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Sparkles className="size-5 mr-2" />
-                        {budget ? `Найти варианты на ${budget}€` : "Укажите бюджет"}
+                        {budget ? `Find options for ${budget}€` : "Enter budget"}
                       </Button>
 
                       <div className="p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl">
                         <p className="text-sm text-blue-400 text-center">
-                          💡 AI найдет лучшие варианты в вашем бюджете с учетом ваших
-                          предпочтений
+                          💡 AI will search for the best deals based on your budget
+                          and preferences
                         </p>
                       </div>
                     </div>
@@ -642,7 +574,7 @@ console.log("AI parsed response:", data);
               </div>
           )}
 
-          {/* Шаг анализа */}
+          {/* ANALYZING */}
           {currentStep === "analyzing" && (
               <div className="space-y-8 animate-in fade-in duration-500">
                 <div className="text-center space-y-6">
@@ -650,13 +582,13 @@ console.log("AI parsed response:", data);
                     <Sparkles className="size-10 text-blue-400" />
                   </div>
                   <h2 className="text-2xl text-zinc-100">
-                    AI анализирует цены...
+                    AI is analyzing prices...
                   </h2>
                   <div className="space-y-3 max-w-md mx-auto">
                     {[
-                      "Сканирование ресторанов поблизости",
-                      "Сравнение цен и акций",
-                      "Поиск лучших предложений",
+                      "Scanning nearby restaurants",
+                      "Comparing prices and discounts",
+                      "Searching for best deals",
                     ].map((text, i) => (
                         <div
                             key={i}
@@ -672,14 +604,14 @@ console.log("AI parsed response:", data);
               </div>
           )}
 
-          {/* Результаты */}
+          {/* RESULTS */}
           {currentStep === "results" && (
               <div className="space-y-8 animate-in fade-in duration-500">
                 <div className="text-center space-y-2">
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30">
                     <Check className="size-4 text-green-400" />
                     <span className="text-sm text-green-400">
-                  Результаты анализа
+                  Analysis results
                 </span>
                   </div>
                 </div>
@@ -690,40 +622,14 @@ console.log("AI parsed response:", data);
                     </Card>
                 )}
 
-                {/*{aiSummary && (*/}
-                {/*    <Card className="bg-zinc-900/70 border-zinc-700 p-4">*/}
-                {/*      <p className="text-xs text-zinc-500 mb-1">*/}
-                {/*        Итог от AI ассистента*/}
-                {/*      </p>*/}
-                {/*      <p className="text-sm text-zinc-100 whitespace-pre-wrap">*/}
-                {/*        {aiSummary}*/}
-                {/*      </p>*/}
-                {/*    </Card>*/}
-                {/*)}*/}
-
-                {/*{rawResponse && (*/}
-                {/*    <Card className="bg-zinc-900/70 border-zinc-800 p-4">*/}
-                {/*      <details>*/}
-                {/*        <summary className="cursor-pointer text-xs text-zinc-500 mb-2">*/}
-                {/*          Показать полный JSON-ответ сервера*/}
-                {/*        </summary>*/}
-                {/*        <div className="mt-3 max-h-64 overflow-auto rounded-lg bg-zinc-950/80 border border-zinc-800 p-3">*/}
-                {/*    <pre className="text-[11px] leading-snug text-zinc-400">*/}
-                {/*      {JSON.stringify(rawResponse, null, 2)}*/}
-                {/*    </pre>*/}
-                {/*        </div>*/}
-                {/*      </details>*/}
-                {/*    </Card>*/}
-                {/*)}*/}
-
                 {results && (
                     <>
-                      {/* Ваш выбор */}
+                      {/* USER CHOICE */}
                       <Card className="bg-zinc-900/50 border-zinc-800 p-6">
                         <div className="flex items-start justify-between mb-4">
                           <div>
                             <Badge className="bg-zinc-800 text-zinc-400 border-0 mb-3">
-                              Ваш выбор
+                              Your Choice
                             </Badge>
                             <h3 className="text-xl text-zinc-100 mb-1">
                               {results.original.name}
@@ -750,7 +656,7 @@ console.log("AI parsed response:", data);
                         </div>
                       </Card>
 
-                      {/* AI рекомендует */}
+                      {/* AI RECOMMENDATIONS */}
                       {results.alternatives.length > 0 ? (
                           <>
                             <div className="space-y-4">
@@ -758,13 +664,13 @@ console.log("AI parsed response:", data);
                                 <div className="flex items-center gap-2">
                                   <Sparkles className="size-5 text-blue-400" />
                                   <h3 className="text-xl text-zinc-100">
-                                    AI рекомендует
+                                    AI Recommends
                                   </h3>
                                 </div>
                                 {selectedFilters.length > 0 && (
                                     <div className="flex items-center gap-2">
                             <span className="text-sm text-zinc-500">
-                              Фильтры:
+                              Filters:
                             </span>
                                       {selectedFilters.map((filterId) => {
                                         const filter = filters.find(
@@ -796,7 +702,7 @@ console.log("AI parsed response:", data);
                                         <div className="flex items-center gap-2 mb-4">
                                           <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
                                             <Sparkles className="size-3 mr-1" />
-                                            Лучший вариант
+                                            Best Option
                                           </Badge>
                                           {alt.filterMatch && (
                                               <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
@@ -811,9 +717,7 @@ console.log("AI parsed response:", data);
                                         <h4 className="text-xl text-zinc-100 mb-1">
                                           {alt.name}
                                         </h4>
-                                        <p className="text-zinc-400 mb-2">
-                                          {alt.items}
-                                        </p>
+                                        <p className="text-zinc-400 mb-2">{alt.items}</p>
                                         {alt.extraBenefit && (
                                             <p className="text-sm text-green-400">
                                               ✨ {alt.extraBenefit}
@@ -876,19 +780,19 @@ console.log("AI parsed response:", data);
                                               })
                                           }
                                       >
-                                        Выбрать
+                                        Choose
                                       </Button>
                                     </div>
                                   </Card>
                               ))}
                             </div>
 
-                            {/* Summary */}
+                            {/* Savings Summary */}
                             <Card className="bg-gradient-to-br from-green-950/40 to-green-900/20 border-green-800/40 p-6">
                               <div className="flex items-center justify-between">
                                 <div>
                                   <p className="text-sm text-green-400 mb-1">
-                                    💰 Ваша экономия
+                                    💰 Your savings
                                   </p>
                                   <p className="text-2xl text-green-300">
                                     +{results.alternatives[0].savings} € (
@@ -897,7 +801,7 @@ console.log("AI parsed response:", data);
                                 </div>
                                 <div className="text-right">
                                   <p className="text-sm text-zinc-400 mb-1">
-                                    За год вы сэкономите
+                                    Estimated yearly savings
                                   </p>
                                   <p className="text-xl text-zinc-200">
                                     ~
@@ -915,8 +819,8 @@ console.log("AI parsed response:", data);
                       ) : (
                           <Card className="bg-zinc-900/70 border-zinc-700 p-6">
                             <p className="text-sm text-zinc-300 text-center">
-                              AI не нашёл альтернатив с лучшей ценой, но вы можете
-                              изменить категорию или бюджет и попробовать ещё раз.
+                              AI couldn’t find better alternatives, but you can modify
+                              your budget or category and try again.
                             </p>
                           </Card>
                       )}
@@ -927,7 +831,7 @@ console.log("AI parsed response:", data);
                             variant="outline"
                             className="border-zinc-700 bg-zinc-900/50 hover:bg-zinc-800 text-zinc-100"
                         >
-                          Попробовать другую категорию
+                          Try another category
                         </Button>
                       </div>
                     </>
@@ -935,30 +839,30 @@ console.log("AI parsed response:", data);
               </div>
           )}
 
-          {/* Корзина */}
+          {/* CART */}
           {currentStep === "cart" && (
               <div className="space-y-8 animate-in fade-in duration-500">
                 <div className="text-center space-y-2">
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30">
                     <ShoppingCart className="size-4 text-green-400" />
-                    <span className="text-sm text-green-400">Ваша корзина</span>
+                    <span className="text-sm text-green-400">Your Cart</span>
                   </div>
                 </div>
 
                 {cart.length === 0 ? (
                     <Card className="bg-zinc-900/50 border-zinc-800 p-12 text-center">
                       <ShoppingCart className="size-12 text-zinc-600 mx-auto mb-4" />
-                      <p className="text-zinc-400 mb-4">Ваша корзина пуста</p>
+                      <p className="text-zinc-400 mb-4">Your cart is empty</p>
                       <Button
                           onClick={() => setCurrentStep("search")}
                           className="bg-blue-600 hover:bg-blue-700 text-white"
                       >
-                        Начать поиск
+                        Start Searching
                       </Button>
                     </Card>
                 ) : (
                     <>
-                      {/* Cart Items */}
+                      {/* CART ITEMS */}
                       <div className="space-y-4">
                         {cart.map((item) => (
                             <Card
@@ -984,7 +888,7 @@ console.log("AI parsed response:", data);
                                   <div className="flex items-center gap-2 mt-1">
                                     <TrendingDown className="size-4 text-green-400" />
                                     <span className="text-green-400">
-                              -{item.savings} €
+                              -{item.savings}€
                             </span>
                                     {item.savingsPercent && (
                                         <Badge className="bg-green-500/20 text-green-400 border-0 text-xs">
@@ -1043,21 +947,19 @@ console.log("AI parsed response:", data);
                         ))}
                       </div>
 
-                      {/* Summary */}
+                      {/* SUMMARY */}
                       <Card className="bg-gradient-to-br from-green-950/40 to-green-900/20 border-green-800/40 p-6">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-sm text-green-400 mb-1">
-                              💰 Ваша экономия
+                              💰 Your total savings
                             </p>
                             <p className="text-2xl text-green-300">
                               +{totalSavings.toFixed(2)} €
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm text-zinc-400 mb-1">
-                              Общая стоимость
-                            </p>
+                            <p className="text-sm text-zinc-400 mb-1">Total cost</p>
                             <p className="text-xl text-zinc-200">
                               {totalCost.toFixed(2)} €
                             </p>
@@ -1071,14 +973,14 @@ console.log("AI parsed response:", data);
                             variant="outline"
                             className="border-zinc-700 bg-zinc-900/50 hover:bg-zinc-800 text-zinc-100"
                         >
-                          Продолжить покупки
+                          Continue Shopping
                         </Button>
                         <Button
                             onClick={clearCart}
                             variant="outline"
                             className="border-red-700 bg-red-900/20 hover:bg-red-900/30 text-red-400"
                         >
-                          Очистить корзину
+                          Clear Cart
                         </Button>
                       </div>
                     </>
@@ -1087,14 +989,14 @@ console.log("AI parsed response:", data);
           )}
         </div>
 
-        {/* Уведомление о добавлении в корзину */}
+        {/* Cart Notification */}
         {showCartNotification && (
             <div className="fixed bottom-4 right-4 z-50">
               <Card className="bg-green-500/10 border border-green-500/30 p-4 rounded-xl shadow-lg shadow-green-500/20">
                 <div className="flex items-center gap-3">
                   <ShoppingCart className="size-5 text-green-400" />
                   <p className="text-sm text-green-400">
-                    Товар добавлен в корзину
+                    Item added to cart
                   </p>
                 </div>
               </Card>
