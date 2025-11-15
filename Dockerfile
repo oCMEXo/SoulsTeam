@@ -1,27 +1,50 @@
-# Лёгкий Node-образ
-FROM node:20-alpine
-
-# Рабочая директория внутри контейнера
+# =======================
+# 1. СБОРКА ФРОНТА (Vite)
+# =======================
+FROM node:18-alpine AS frontend-build
 WORKDIR /app
 
-# Сначала копируем только package*.json — чтобы кешировать зависимости
+# копируем frontend-зависимости
 COPY package*.json ./
+COPY vite.config.* tsconfig*.json ./
 
-# Устанавливаем зависимости
+# папки с кодом
+COPY src ./src
+COPY public ./public
+
 RUN npm install
-
-# Копируем весь проект внутрь контейнера
-COPY . .
-
-# Собираем Vite-проект в папку build
 RUN npm run build
 
-# Настройки окружения
-ENV NODE_ENV=production
-ENV PORT=8080
+# ==================================
+# 2. СБОРКА BACKEND'А (ASP.NET Core)
+# ==================================
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS backend-build
+WORKDIR /src
 
-# Открываем порт
+# Копируем .csproj
+COPY backend/*.csproj ./backend/
+RUN dotnet restore ./backend/*.csproj
+
+# Копируем остальной C# код
+COPY backend/. ./backend/
+
+# Кладём собранный фронт в wwwroot
+COPY --from=frontend-build /app/dist ./backend/wwwroot
+
+WORKDIR /src/backend
+RUN dotnet publish -c Release -o /app/publish
+
+# ======================
+# 3. RUNTIME-КОНТЕЙНЕР
+# ======================
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+
+COPY --from=backend-build /app/publish .
+
+# В Cloud Run принято слушать 8080
+ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
 
-# Запускаем наш express-сервер
-CMD ["node", "server.js"]
+# ЗДЕСЬ ВАЖНО: замени TestApi.dll на ИМЯ твоего dll (проекта)
+ENTRYPOINT ["dotnet", "TestApi.dll"]

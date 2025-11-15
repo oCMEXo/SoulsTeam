@@ -21,7 +21,7 @@ builder.Services.AddSingleton<FeatherlessService>(sp =>
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddSingleton<PersonService>();
 
-// CORS
+// CORS (на будущее, если фронт будет на другом домене)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policyBuilder =>
@@ -53,20 +53,33 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// ✅ Привязываем Kestrel к порту Cloud Run
+// ✅ Cloud Run порт
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://0.0.0.0:{port}");
 
 // 🔥 Порядок middleware
-app.UseHttpsRedirection();
+
+// В Cloud Run HTTPS делает прокси, редирект можно убрать,
+// чтобы не ловить странные эффекты
+// app.UseHttpsRedirection();
+
 app.UseRouting();
+
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 
-// ✅ Health-check на корне
-app.MapGet("/", () => Results.Ok("API is running"));
+// ✅ Статика фронта (Vite билд лежит в wwwroot)
+app.UseDefaultFiles();  // ищет index.html по умолчанию
+app.UseStaticFiles();   // раздаёт файлы из wwwroot
 
-// Контроллеры
+// ✅ Контроллеры API
 app.MapControllers();
+
+// ✅ SPA фоллбек: всё, что не /api и не /swagger, -> index.html
+app.MapFallbackToFile("index.html");
+
+// ❌ Старый root-эндпоинт больше не нужен,
+// потому что корень теперь отдаёт фронт
+// app.MapGet("/", () => Results.Ok("API is running"));
 
 app.Run();
