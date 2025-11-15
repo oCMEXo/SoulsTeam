@@ -77,6 +77,7 @@ export function Hero({ onTryDemo }: HeroProps) {
                   </div>
                   <span className="text-3xl text-zinc-100">16+</span>
                 </div>
+
                 <p className="text-sm text-zinc-500">Age</p>
               </div>
               <div className="space-y-2">

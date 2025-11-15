@@ -26,6 +26,7 @@ export default function App() {
       <UniqueValue />
       <Features />
       <CTA />
+
     </div>
   );
 }
