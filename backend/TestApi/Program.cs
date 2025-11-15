@@ -11,7 +11,6 @@ builder.Logging.AddDebug();
 string featherlessApiKey = builder.Configuration["Featherless:ApiKey"]!;
 string model = builder.Configuration["Featherless:Model"]!;
 
-// ИСПРАВЛЕНО: Правильная регистрация с ILogger
 builder.Services.AddSingleton<FeatherlessService>(serviceProvider =>
 {
     var logger = serviceProvider.GetRequiredService<ILogger<FeatherlessService>>();
@@ -29,7 +28,11 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins("http://localhost:3000", "http://localhost:5173","http://localhost:3001") // Добавлен порт Vite
+                .WithOrigins(
+                    "http://localhost:3000",
+                    "http://localhost:5173",
+                    "http://localhost:3001"
+                )
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
@@ -38,26 +41,22 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); // Добавлен Swagger для тестирования API
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// ===== SWAGGER (только в Development) =====
+// ===== SWAGGER =====
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// ===== ENABLE CORS =====
-app.UseCors("AllowFrontend");
-
-// Отключаем HTTPS redirect, чтобы браузер не ругался
-// app.UseHttpsRedirection();
-
+// ===== MIDDLEWARE ORDER FIX =====
+app.UseRouting();          // <---- ОБЯЗАТЕЛЬНО
+app.UseCors("AllowFrontend"); 
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
-///nice
