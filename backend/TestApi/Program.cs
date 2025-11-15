@@ -35,6 +35,8 @@ builder.Services.AddCors(options =>
                 "http://localhost:5173",
                 "https://localhost:5173",
                 "http://localhost:8080"
+                // сюда потом можно добавить URL Cloud Run, когда он будет известен
+                // "https://soulsteam-XXXXXX-uc.a.run.app"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -54,11 +56,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// ⭐ ВАЖНО: привязываем Kestrel к порту из окружения Cloud Run
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Urls.Add($"http://0.0.0.0:{port}");
+
 // 🔥 Правильный порядок
-app.UseHttpsRedirection();   // <-- нужно если фронт шлёт HTTPS
+app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.Run();
