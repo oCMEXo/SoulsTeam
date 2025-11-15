@@ -2,7 +2,11 @@ import { Button } from "./ui/button";
 import { Sparkles, ShoppingBag, TrendingDown } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
-export function Hero() {
+interface HeroProps {
+  onTryDemo: () => void;
+}
+
+export function Hero({ onTryDemo }: HeroProps) {
   return (
     <section className="relative overflow-hidden border-b border-zinc-800">
       {/* Background gradient */}
@@ -52,8 +56,12 @@ export function Hero() {
             </div>
 
             <div className="flex flex-wrap gap-4 pt-2">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white h-12 px-8">
-                Начать экономить
+              <Button 
+                size="lg" 
+                className="bg-blue-600 hover:bg-blue-700 text-white h-12 px-8"
+                onClick={onTryDemo}
+              >
+                Попробовать демо
               </Button>
               <Button size="lg" variant="outline" className="border-zinc-700 bg-zinc-900/50 hover:bg-zinc-800 text-zinc-100 h-12 px-8">
                 Как это работает
