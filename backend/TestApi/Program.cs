@@ -2,41 +2,43 @@ using TestApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ===== LOGGING =====
+// Logging
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
-// ===== FEATHERLESS =====
+// Featherless
 string featherlessApiKey = builder.Configuration["Featherless:ApiKey"]!;
 string model = builder.Configuration["Featherless:Model"]!;
 
-builder.Services.AddSingleton<FeatherlessService>(serviceProvider =>
+builder.Services.AddSingleton<FeatherlessService>(sp =>
 {
-    var logger = serviceProvider.GetRequiredService<ILogger<FeatherlessService>>();
+    var logger = sp.GetRequiredService<ILogger<FeatherlessService>>();
     return new FeatherlessService(featherlessApiKey, model, logger);
 });
 
-// ===== MONGO =====
+// Mongo
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddSingleton<PersonService>();
 
-// ===== CORS =====
+// CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy
-                .WithOrigins(
-                    "http://localhost:3000",
-                    "http://localhost:5173",
-                    "http://localhost:3001"
-                )
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
-        });
+    options.AddPolicy("AllowFrontend", builder =>
+    {
+        builder
+            .WithOrigins(
+                "http://localhost:3000",
+                "https://localhost:3000",
+                "http://localhost:3001",
+                "https://localhost:3001",
+                "http://localhost:5173",
+                "https://localhost:5173"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
 });
 
 builder.Services.AddControllers();
@@ -45,18 +47,17 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// ===== SWAGGER =====
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// ===== MIDDLEWARE ORDER FIX =====
-app.UseRouting();          // <---- ОБЯЗАТЕЛЬНО
-app.UseCors("AllowFrontend"); 
+// 🔥 Правильный порядок
+app.UseHttpsRedirection();   // <-- нужно если фронт шлёт HTTPS
+app.UseRouting();
+app.UseCors("AllowFrontend");
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();
