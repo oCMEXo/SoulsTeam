@@ -24,9 +24,9 @@ builder.Services.AddSingleton<PersonService>();
 // CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", builder =>
+    options.AddPolicy("AllowFrontend", policyBuilder =>
     {
-        builder
+        policyBuilder
             .WithOrigins(
                 "http://localhost:3000",
                 "https://localhost:3000",
@@ -35,8 +35,7 @@ builder.Services.AddCors(options =>
                 "http://localhost:5173",
                 "https://localhost:5173",
                 "http://localhost:8080",
-                " https://soulsteam-576376474100.europe-west1.run.app"
-                
+                "https://soulsteam-576376474100.europe-west1.run.app"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -50,21 +49,22 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// ✅ Swagger и в Dev, и в Prod (Cloud Run)
+app.UseSwagger();
+app.UseSwaggerUI();
 
-// ⭐ ВАЖНО: привязываем Kestrel к порту из окружения Cloud Run
+// ✅ Привязка к порту Cloud Run
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://0.0.0.0:{port}");
 
-// 🔥 Правильный порядок
+// 🔥 Порядок middleware
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
+
+// ✅ Простой health-check на корне
+app.MapGet("/", () => Results.Ok("API is running"));
 
 app.MapControllers();
 
