@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TestApi.Services;
+using TestApi.Models;
 
 namespace TestApi.Controllers;
 
@@ -16,24 +17,40 @@ public class AiController : ControllerBase
         _mongoDbService = mongoDbService;
     }
 
-[HttpGet("ask")]
-public async Task<IActionResult> Ask(string prompt)
-{
-    if (string.IsNullOrWhiteSpace(prompt))
-        return BadRequest(new { error = "Prompt не может быть пустым" });
+    // Форматируем под фронтенд
+    private object AdaptForFrontend(AiOffersResponse ai)
+    {
+        var original = ai.Offers.FirstOrDefault(o => o.IsOriginal);
+        var alternatives = ai.Offers.Where(o => !o.IsOriginal).ToList();
 
-    var result = await _featherlessService.GetOffersAsync(prompt);
+        return new
+        {
+            summary = ai.Summary,
+            original = original,
+            alternatives = alternatives,
+            totalPrice = ai.TotalPrice,
+            totalSavings = ai.TotalSavings
+        };
+    }
 
-    if (result == null)
-        return StatusCode(500, new { error = "AI вернул пустой ответ" });
+    [HttpGet("ask")]
+    public async Task<IActionResult> Ask(string prompt)
+    {
+        if (string.IsNullOrWhiteSpace(prompt))
+            return BadRequest(new { error = "Prompt не может быть пустым" });
 
-    // ЛОГИРУЕМ в Mongo то, что ввёл пользователь и summary
-    await _mongoDbService.InsertChatAsync(prompt, result.Summary);
+        var result = await _featherlessService.GetOffersAsync(prompt);
 
-    return Ok(result);
-}
+        if (result == null)
+            return StatusCode(500, new { error = "AI вернул пустой ответ" });
 
+        // Логируем запрос и summary
+        await _mongoDbService.InsertChatAsync(prompt, result.Summary);
 
+        var adapted = AdaptForFrontend(result);
+
+        return Ok(adapted);
+    }
 
     [HttpGet("history")]
     public async Task<IActionResult> History(int limit = 50)

@@ -3,7 +3,6 @@ using System.Text;
 using System.Text.Json;
 using TestApi.Models;
 
-
 namespace TestApi.Services;
 
 public class FeatherlessService
@@ -11,7 +10,7 @@ public class FeatherlessService
     private readonly HttpClient _httpClient;
     private readonly string _model;
 
-    // Твой системный промт
+    // 💬 ТВОЙ СИСТЕМНЫЙ ПРОМПТ — БЕЗ ИЗМЕНЕНИЙ
     private const string SystemPrompt = @"
 Ты — AI-ассистент по финансовой грамотности.
 
@@ -52,6 +51,37 @@ public class FeatherlessService
    - Без осуждения, особенно когда речь о миграции, ментальном здоровье и деньгах.
 ";
 
+    // 📌 JSON-инструкция — отдельным блоком
+    private const string JsonInstruction = @"
+Ты обязан вернуть строго JSON:
+
+{
+  ""summary"": ""string"",
+  ""offers"": [
+    {
+      ""name"": ""string"",
+      ""items"": ""string"",
+      ""price"": 0.0,
+      ""savings"": 0.0,
+      ""savingsPercent"": 0.0,
+      ""location"": ""string"",
+      ""deliveryTime"": ""string"",
+      ""rating"": 0.0,
+      ""isRecommended"": true,
+      ""isOriginal"": true
+    }
+  ],
+  ""totalPrice"": 0.0,
+  ""totalSavings"": 0.0
+}
+
+ТРЕБОВАНИЯ:
+- НЕ используй проценты в виде ""15%"" → только число 15.
+- НЕ добавляй текст вне JSON.
+- НЕ используй markdown.
+- price/savings/savingsPercent — только number.
+";
+
     public FeatherlessService(string apiKey, string model)
     {
         _model = model;
@@ -61,67 +91,53 @@ public class FeatherlessService
             new AuthenticationHeaderValue("Bearer", apiKey);
     }
 
-    public async Task<AiOffersResponse?> GetOffersAsync(string userPrompt)
-{
-    var jsonInstruction = @"
-Ты должен ВСЕГДА возвращать только JSON в формате:
-
-{
-  ""summary"": string,
-  ""offers"": [
+    // Вытаскиваем JSON из ответа модели
+    private string ExtractJson(string text)
     {
-      ""name"": string,
-      ""items"": string,
-      ""price"": number,
-      ""savings"": number,
-      ""savingsPercent"": number,
-      ""location"": string,
-      ""deliveryTime"": string,
-      ""rating"": number,
-      ""isRecommended"": boolean,
-      ""isOriginal"": boolean
+        int start = text.IndexOf('{');
+        int end = text.LastIndexOf('}');
+
+        if (start == -1 || end == -1 || end <= start)
+            return "{}";
+
+        return text.Substring(start, end - start + 1);
     }
-  ],
-  ""totalPrice"": number,
-  ""totalSavings"": number
-}
 
-НЕ добавляй текст вне JSON.
-";
-
-    var requestBody = new
+    public async Task<AiOffersResponse?> GetOffersAsync(string userPrompt)
     {
-        model = _model,
-        messages = new[]
+        var requestBody = new
         {
-            new { role = "system", content = SystemPrompt + "\n" + jsonInstruction },
-            new { role = "user", content = userPrompt }
-        }
-    };
+            model = _model,
+            messages = new[]
+            {
+                new { role = "system", content = SystemPrompt + "\n\n" + JsonInstruction },
+                new { role = "user", content = userPrompt }
+            }
+        };
 
-    var content = new StringContent(
-        JsonSerializer.Serialize(requestBody),
-        Encoding.UTF8,
-        "application/json"
-    );
+        var content = new StringContent(
+            JsonSerializer.Serialize(requestBody),
+            Encoding.UTF8,
+            "application/json"
+        );
 
-    var response = await _httpClient.PostAsync("chat/completions", content);
-    response.EnsureSuccessStatusCode();
+        var response = await _httpClient.PostAsync("chat/completions", content);
+        response.EnsureSuccessStatusCode();
 
-    var json = await response.Content.ReadAsStringAsync();
-    using var doc = JsonDocument.Parse(json);
+        var json = await response.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
 
-    var aiText = doc.RootElement
-        .GetProperty("choices")[0]
-        .GetProperty("message")
-        .GetProperty("content")
-        .GetString();
+        var aiText = doc.RootElement
+            .GetProperty("choices")[0]
+            .GetProperty("message")
+            .GetProperty("content")
+            .GetString();
 
-    if (string.IsNullOrWhiteSpace(aiText))
-        return null;
+        if (string.IsNullOrWhiteSpace(aiText))
+            return null;
 
-    // Парсим JSON от ИИ
-    return JsonSerializer.Deserialize<AiOffersResponse>(aiText);
-}
+        var cleanJson = ExtractJson(aiText);
 
+        return JsonSerializer.Deserialize<AiOffersResponse>(cleanJson);
+    }
 }
