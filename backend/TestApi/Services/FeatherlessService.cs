@@ -1,6 +1,8 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using TestApi.Models;
+
 
 namespace TestApi.Services;
 
@@ -59,33 +61,67 @@ public class FeatherlessService
             new AuthenticationHeaderValue("Bearer", apiKey);
     }
 
-    public async Task<string> GetChatResponseAsync(string prompt)
+    public async Task<AiOffersResponse?> GetOffersAsync(string userPrompt)
+{
+    var jsonInstruction = @"
+Ты должен ВСЕГДА возвращать только JSON в формате:
+
+{
+  ""summary"": string,
+  ""offers"": [
     {
-        var requestBody = new
-        {
-            model = _model,
-            messages = new[]
-            {
-                new { role = "system", content = SystemPrompt },
-                new { role = "user", content = prompt }
-            }
-        };
-
-        var content = new StringContent(
-            JsonSerializer.Serialize(requestBody),
-            Encoding.UTF8,
-            "application/json"
-        );
-
-        var response = await _httpClient.PostAsync("chat/completions", content);
-        response.EnsureSuccessStatusCode();
-
-        var json = await response.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(json);
-        return doc.RootElement
-                  .GetProperty("choices")[0]
-                  .GetProperty("message")
-                  .GetProperty("content")
-                  .GetString();
+      ""name"": string,
+      ""items"": string,
+      ""price"": number,
+      ""savings"": number,
+      ""savingsPercent"": number,
+      ""location"": string,
+      ""deliveryTime"": string,
+      ""rating"": number,
+      ""isRecommended"": boolean,
+      ""isOriginal"": boolean
     }
+  ],
+  ""totalPrice"": number,
+  ""totalSavings"": number
+}
+
+НЕ добавляй текст вне JSON.
+";
+
+    var requestBody = new
+    {
+        model = _model,
+        messages = new[]
+        {
+            new { role = "system", content = SystemPrompt + "\n" + jsonInstruction },
+            new { role = "user", content = userPrompt }
+        }
+    };
+
+    var content = new StringContent(
+        JsonSerializer.Serialize(requestBody),
+        Encoding.UTF8,
+        "application/json"
+    );
+
+    var response = await _httpClient.PostAsync("chat/completions", content);
+    response.EnsureSuccessStatusCode();
+
+    var json = await response.Content.ReadAsStringAsync();
+    using var doc = JsonDocument.Parse(json);
+
+    var aiText = doc.RootElement
+        .GetProperty("choices")[0]
+        .GetProperty("message")
+        .GetProperty("content")
+        .GetString();
+
+    if (string.IsNullOrWhiteSpace(aiText))
+        return null;
+
+    // Парсим JSON от ИИ
+    return JsonSerializer.Deserialize<AiOffersResponse>(aiText);
+}
+
 }
