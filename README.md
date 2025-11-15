@@ -1,6 +1,6 @@
-🌙 SoulsTeam — Full-Stack AI-Powered Assistant
+🌙 MoneyCouch — Full-Stack AI-Powered Assistant
 
-SoulsTeam is a full-stack project that blends a stylish dark-themed frontend with a powerful AI-driven backend.
+MoneyCouch is a full-stack project that blends a stylish dark-themed frontend with a powerful AI-driven backend.
 The system uses modern technologies to provide smart recommendations, structured financial insights, and a polished experience.
 
 ✨ Features
@@ -67,7 +67,7 @@ Frontend
 
 Backend
 
-🧩 .NET 7
+🧩 .NET 9
 
 🚀 C# Web API
 
