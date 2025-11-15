@@ -49,4 +49,13 @@ public class MongoDbService
 
         await ChatMessages.InsertOneAsync(message);
     }
+    public async Task<List<ChatMessage>> GetChatHistoryAsync(int limit = 50)
+{
+    return await ChatMessages
+        .Find(_ => true)
+        .SortByDescending(m => m.CreatedAt)
+        .Limit(limit)
+        .ToListAsync();
+}
+
 }
