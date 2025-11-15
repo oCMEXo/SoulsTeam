@@ -46,7 +46,7 @@ public class FeatherlessService
 }
 
 Только JSON. Без markdown, текста до или после.
-и указывай где это можно купить - конкретные магазины или доставки в том городе, где делается промпт
+Давай конкретную информацию о товаре который ты представляешь по более выгодной цене
 ";
 
     public FeatherlessService(string apiKey, string model, ILogger<FeatherlessService> logger)
