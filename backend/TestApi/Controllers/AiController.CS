@@ -16,18 +16,23 @@ public class AiController : ControllerBase
         _mongoDbService = mongoDbService;
     }
 
-    [HttpGet("ask")]
-    public async Task<IActionResult> Ask(string prompt)
+[HttpGet("ask")]
+public async Task<IActionResult> Ask(string prompt)
+{
+    if (string.IsNullOrWhiteSpace(prompt))
+        return BadRequest(new { error = "Prompt не может быть пустым" });
+
+    var result = await _featherlessService.GetChatResponseAsync(prompt);
+
+    await _mongoDbService.InsertChatAsync(prompt, result);
+
+    return Ok(new
     {
-        if (string.IsNullOrWhiteSpace(prompt))
-            return BadRequest(new { error = "Prompt не может быть пустым" });
+        original = result,
+        alternatives = new string[0]
+    });
+}
 
-        var result = await _featherlessService.GetChatResponseAsync(prompt);
-
-        await _mongoDbService.InsertChatAsync(prompt, result);
-
-        return Ok(new { response = result });
-    }
 
     [HttpGet("history")]
     public async Task<IActionResult> History(int limit = 50)
