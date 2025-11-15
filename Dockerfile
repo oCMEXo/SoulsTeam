@@ -5,7 +5,7 @@ WORKDIR /app
 # Копируем манифесты и конфиги
 COPY package*.json ./
 COPY tsconfig*.json vite.config.ts ./
-COPY index.html ./          # ✅ ДОБАВИЛИ ЭТУ СТРОКУ
+COPY index.html ./          
 
 # Копируем исходники
 COPY src ./src
