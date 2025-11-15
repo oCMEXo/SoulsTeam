@@ -1002,6 +1002,7 @@ Filters: ${filtersText}
               </Card>
             </div>
         )}
+
       </div>
   );
 }
