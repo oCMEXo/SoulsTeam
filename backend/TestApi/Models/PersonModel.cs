@@ -9,10 +9,9 @@ public class PersonModel
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; }
 
-    [BsonElement("email")]
+    [BsonElement("Email")]
     public string Email { get; set; }
 
-    [BsonElement("password")]
+    [BsonElement("Password")]
     public string Password { get; set; }
 }
-///Test if we will make data structure 
