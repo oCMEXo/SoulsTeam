@@ -100,7 +100,11 @@ interface Results {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const API_BASE = import.meta.env.VITE_API_BASE_URL || window.location.origin;
+=======
+const API_BASE = "http://localhost:5032";
+>>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
 =======
 const API_BASE = "http://localhost:5032";
 >>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
@@ -203,6 +207,7 @@ try {
       const filtersText =
           selectedFilters.length > 0
               ? selectedFilters.join(", ")
+<<<<<<< HEAD
               : "no additional filters";
 >>>>>>> parent of f3fba67 (Update Demo.tsx)
 
@@ -219,10 +224,18 @@ Filters: ${filtersText}
               : "без дополнительных фильтров";
 
       const prompt = `
+=======
+              : "без дополнительных фильтров";
+
+      const prompt = `
+>>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
 Категория: ${selectedCategory}
 Бюджет: ${budget || "-"} €
 Что ищет пользователь: ${searchQuery || "-"}
 Фильтры: ${filtersText}
+<<<<<<< HEAD
+>>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+=======
 >>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
 `.trim();
 
