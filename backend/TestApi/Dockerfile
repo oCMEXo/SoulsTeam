@@ -20,7 +20,7 @@ WORKDIR /app
 COPY --from=build /app .
 
 # Render требует запуск через порт 8080
-ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_URLS=http://+:3000
 
 EXPOSE 8080
 
