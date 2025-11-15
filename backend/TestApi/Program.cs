@@ -28,19 +28,12 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 // ===== ENABLE CORS =====
 app.UseCors("AllowFrontend");
 
-// Swagger only for dev
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 // Отключаем HTTPS redirect, чтобы браузер не ругался
 // app.UseHttpsRedirection();
