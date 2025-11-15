@@ -1,11 +1,12 @@
-using MongoDB.Bson;
 using MongoDB.Driver;
+using TestApi.Models;
+
 
 namespace TestApi.Services;
 
 public class MongoDbService
 {
-    private readonly IMongoCollection<BsonDocument> _collection;
+    private readonly IMongoCollection<ChatMessage> _collection;
 
     public MongoDbService(IConfiguration config)
     {
@@ -18,26 +19,26 @@ public class MongoDbService
 
         var client = new MongoClient(connectionString);
         var database = client.GetDatabase(databaseName);
-        _collection = database.GetCollection<BsonDocument>(collectionName);
+        _collection = database.GetCollection<ChatMessage>(collectionName);
     }
 
     public async Task InsertChatAsync(string prompt, string response)
     {
-        var doc = new BsonDocument
+        var message = new ChatMessage
         {
-            { "prompt", prompt },
-            { "response", response },
-            { "createdAt", DateTime.UtcNow }
+            Prompt = prompt,
+            Response = response,
+            CreatedAt = DateTime.UtcNow
         };
 
-        await _collection.InsertOneAsync(doc);
+        await _collection.InsertOneAsync(message);
     }
 
-    public async Task<List<BsonDocument>> GetChatHistoryAsync(int limit = 50)
+    public async Task<List<ChatMessage>> GetChatHistoryAsync(int limit = 50)
     {
         return await _collection
-            .Find(new BsonDocument())
-            .Sort(Builders<BsonDocument>.Sort.Descending("createdAt"))
+            .Find(_ => true)
+            .SortByDescending(m => m.CreatedAt)
             .Limit(limit)
             .ToListAsync();
     }
