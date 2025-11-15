@@ -1,24 +1,26 @@
-using TestApi.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+ using TestApi.Services;
 
-// Чтение API key и модели из конфигурации
-string featherlessApiKey = builder.Configuration["Featherless:ApiKey"];
-string model = builder.Configuration["Featherless:Model"];
+ var builder = WebApplication.CreateBuilder(args);
 
-// Регистрируем сервисы
-builder.Services.AddSingleton(new FeatherlessService(featherlessApiKey, model));
-builder.Services.AddSingleton<MongoDbService>();
+ string featherlessApiKey = builder.Configuration["Featherless:ApiKey"]!;
+ string model = builder.Configuration["Featherless:Model"]!;
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+ builder.Services.AddSingleton(new FeatherlessService(featherlessApiKey, model));
+ builder.Services.AddSingleton<MongoDbService>();
+ builder.Services.AddSingleton<PersonService>();
 
-var app = builder.Build();
+ builder.Services.AddControllers();
+ builder.Services.AddEndpointsApiExplorer();
+ builder.Services.AddSwaggerGen();
 
-app.UseSwagger();
-app.UseSwaggerUI();
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
-app.Run();
+ var app = builder.Build();
+
+ app.UseSwagger();
+ app.UseSwaggerUI();
+
+
+ app.UseHttpsRedirection();
+ app.UseAuthorization();
+ app.MapControllers();
+ app.Run();

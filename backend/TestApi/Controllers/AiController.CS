@@ -28,11 +28,4 @@ public class AiController : ControllerBase
 
         return Ok(new { response = result });
     }
-
-    [HttpGet("history")]
-    public async Task<IActionResult> History(int limit = 50)
-    {
-        var history = await _mongoDbService.GetChatHistoryAsync(limit);
-        return Ok(history);
-    }
 }

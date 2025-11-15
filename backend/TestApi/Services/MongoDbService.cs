@@ -1,25 +1,41 @@
+using MongoDB.Bson;
 using MongoDB.Driver;
 using TestApi.Models;
-
 
 namespace TestApi.Services;
 
 public class MongoDbService
 {
-    private readonly IMongoCollection<ChatMessage> _collection;
+    private readonly IMongoDatabase _database;
+
+    public IMongoCollection<ChatMessage> ChatMessages { get; }
+    public IMongoCollection<PersonModel> Persons { get; }
 
     public MongoDbService(IConfiguration config)
     {
         var connectionString = config["MongoDb:ConnectionString"]
             ?? throw new Exception("MongoDb:ConnectionString is not set");
+
         var databaseName = config["MongoDb:DatabaseName"]
             ?? throw new Exception("MongoDb:DatabaseName is not set");
-        var collectionName = config["MongoDb:CollectionName"]
-            ?? throw new Exception("MongoDb:CollectionName is not set");
 
         var client = new MongoClient(connectionString);
-        var database = client.GetDatabase(databaseName);
-        _collection = database.GetCollection<ChatMessage>(collectionName);
+        _database = client.GetDatabase(databaseName);
+
+        // Создание коллекций
+        EnsureCollectionExists("ChatMessages");
+        EnsureCollectionExists("Persons");
+
+        ChatMessages = _database.GetCollection<ChatMessage>("ChatMessages");
+        Persons = _database.GetCollection<PersonModel>("Persons");
+    }
+
+    private void EnsureCollectionExists(string name)
+    {
+        var filter = new BsonDocument("name", name);
+        var collections = _database.ListCollections(new ListCollectionsOptions { Filter = filter });
+        if (!collections.Any())
+            _database.CreateCollection(name);
     }
 
     public async Task InsertChatAsync(string prompt, string response)
@@ -31,15 +47,6 @@ public class MongoDbService
             CreatedAt = DateTime.UtcNow
         };
 
-        await _collection.InsertOneAsync(message);
-    }
-
-    public async Task<List<ChatMessage>> GetChatHistoryAsync(int limit = 50)
-    {
-        return await _collection
-            .Find(_ => true)
-            .SortByDescending(m => m.CreatedAt)
-            .Limit(limit)
-            .ToListAsync();
+        await ChatMessages.InsertOneAsync(message);
     }
 }
