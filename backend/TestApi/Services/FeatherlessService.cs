@@ -16,8 +16,8 @@ public class FeatherlessService
 ";
 
     // Мягкая, но строгая инструкция
-    private const string JsonInstruction = @"
-Ответи строго JSON формата:
+   private const string JsonInstruction = @"
+Верни строго JSON формата:
 
 {
   ""summary"": ""string"",
@@ -45,10 +45,14 @@ public class FeatherlessService
 }
 
 Правила:
-- Никакого текста до или после JSON.
-- Все строки должны быть заполнены.
-- alternatives должен содержать хотя бы 1 элемент.
+- Только JSON. Без текста до или после.
+- original — объект, а не строка.
+- alternatives — массив из минимум одного элемента.
+- Все строки должны быть заполнены осмысленными значениями.
+- Можно использовать придуманное, но реалистичное.
+- Никакого markdown, комментариев, процентов вне строк.
 ";
+
 
     public FeatherlessService(string apiKey, string model)
     {
