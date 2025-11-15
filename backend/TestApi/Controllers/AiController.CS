@@ -17,7 +17,6 @@ public class AiController : ControllerBase
     }
 
 [HttpGet("ask")]
-[HttpGet("ask")]
 public async Task<IActionResult> Ask(string prompt)
 {
     if (string.IsNullOrWhiteSpace(prompt))
