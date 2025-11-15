@@ -5,14 +5,15 @@ WORKDIR /app
 # Копируем манифесты и конфиги
 COPY package*.json ./
 COPY tsconfig*.json vite.config.ts ./
+COPY index.html ./          # ✅ ДОБАВИЛИ ЭТУ СТРОКУ
 
 # Копируем исходники
 COPY src ./src
 COPY public ./public
 
-# Установка зависимостей и сборка
 RUN npm install
 RUN npm run build
+
 
 # ============== 2. RUNTIME-СЕРВЕР ==============
 FROM node:18-alpine AS final
