@@ -4,7 +4,7 @@ using TestApi.Services;
 namespace TestApi.Controllers;
 
 [ApiController]
-[Route("ai")]
+[Route("[controller]")]
 public class AiController : ControllerBase
 {
     private readonly FeatherlessService _featherlessService;
@@ -16,9 +16,8 @@ public class AiController : ControllerBase
         _mongoDbService = mongoDbService;
     }
 
-    // === GET: /ai/ask?prompt=Hello ===
     [HttpGet("ask")]
-    public async Task<IActionResult> Ask([FromQuery] string prompt)
+    public async Task<IActionResult> Ask(string prompt)
     {
         if (string.IsNullOrWhiteSpace(prompt))
             return BadRequest(new { error = "Prompt не может быть пустым" });
@@ -30,9 +29,8 @@ public class AiController : ControllerBase
         return Ok(new { response = result });
     }
 
-    // === GET: /ai/history?limit=50 ===
     [HttpGet("history")]
-    public async Task<IActionResult> History([FromQuery] int limit = 50)
+    public async Task<IActionResult> History(int limit = 50)
     {
         var history = await _mongoDbService.GetChatHistoryAsync(limit);
         return Ok(history);
