@@ -6,40 +6,58 @@ namespace TestApi.Services;
 
 public class MongoDbService
 {
-    private readonly IMongoDatabase _database;
+    private readonly IMongoDatabase? _database;
+    private readonly bool _mongoAvailable;
 
-    public IMongoCollection<ChatMessage> ChatMessages { get; }
-    public IMongoCollection<PersonModel> Persons { get; }
+    public IMongoCollection<ChatMessage>? ChatMessages { get; }
+    public IMongoCollection<PersonModel>? Persons { get; }
 
     public MongoDbService(IConfiguration config)
     {
-        var connectionString = config["MongoDb:ConnectionString"]
-            ?? throw new Exception("MongoDb:ConnectionString is not set");
+        try
+        {
+            var connectionString = config["MongoDb:ConnectionString"];
+            var databaseName = config["MongoDb:DatabaseName"];
 
-        var databaseName = config["MongoDb:DatabaseName"]
-            ?? throw new Exception("MongoDb:DatabaseName is not set");
+            var client = new MongoClient(connectionString);
+            _database = client.GetDatabase(databaseName);
 
-        var client = new MongoClient(connectionString);
-        _database = client.GetDatabase(databaseName);
+            EnsureCollectionExists("ChatMessages");
+            EnsureCollectionExists("Persons");
 
-        // Создание коллекций
-        EnsureCollectionExists("ChatMessages");
-        EnsureCollectionExists("Persons");
+            ChatMessages = _database.GetCollection<ChatMessage>("ChatMessages");
+            Persons = _database.GetCollection<PersonModel>("Persons");
 
-        ChatMessages = _database.GetCollection<ChatMessage>("ChatMessages");
-        Persons = _database.GetCollection<PersonModel>("Persons");
+            _mongoAvailable = true;
+            Console.WriteLine("MongoDB connected successfully.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("⚠️ MongoDB connection FAILED: " + ex.Message);
+            _mongoAvailable = false;
+
+            ChatMessages = null;
+            Persons = null;
+        }
     }
 
     private void EnsureCollectionExists(string name)
     {
+        if (!_mongoAvailable) return;
+
         var filter = new BsonDocument("name", name);
-        var collections = _database.ListCollections(new ListCollectionsOptions { Filter = filter });
+        var collections = _database!.ListCollections(new ListCollectionsOptions { Filter = filter });
+
         if (!collections.Any())
             _database.CreateCollection(name);
     }
 
+    // ----- SAFE MODE: no crash -----
     public async Task InsertChatAsync(string prompt, string response)
     {
+        if (!_mongoAvailable || ChatMessages == null)
+            return;
+
         var message = new ChatMessage
         {
             Prompt = prompt,
@@ -47,15 +65,25 @@ public class MongoDbService
             CreatedAt = DateTime.UtcNow
         };
 
-        await ChatMessages.InsertOneAsync(message);
+        try
+        {
+            await ChatMessages.InsertOneAsync(message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("⚠️ Mongo insert failed: " + ex.Message);
+        }
     }
-    public async Task<List<ChatMessage>> GetChatHistoryAsync(int limit = 50)
-{
-    return await ChatMessages
-        .Find(_ => true)
-        .SortByDescending(m => m.CreatedAt)
-        .Limit(limit)
-        .ToListAsync();
-}
 
+    public async Task<List<ChatMessage>> GetChatHistoryAsync(int limit = 50)
+    {
+        if (!_mongoAvailable || ChatMessages == null)
+            return new List<ChatMessage>(); // safe fallback
+
+        return await ChatMessages
+            .Find(_ => true)
+            .SortByDescending(m => m.CreatedAt)
+            .Limit(limit)
+            .ToListAsync();
+    }
 }

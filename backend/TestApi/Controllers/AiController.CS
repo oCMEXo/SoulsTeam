@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using TestApi.Services;
-using Microsoft.Extensions.Logging;
 
 namespace TestApi.Controllers;
 
@@ -9,16 +8,16 @@ namespace TestApi.Controllers;
 public class AiController : ControllerBase
 {
     private readonly FeatherlessService _featherlessService;
-    private readonly MongoDbService _mongoDbService;
+    private readonly MongoDbService _mongo;
     private readonly ILogger<AiController> _logger;
 
     public AiController(
-        FeatherlessService featherlessService, 
-        MongoDbService mongoDbService,
+        FeatherlessService featherlessService,
+        MongoDbService mongo,
         ILogger<AiController> logger)
     {
         _featherlessService = featherlessService;
-        _mongoDbService = mongoDbService;
+        _mongo = mongo;
         _logger = logger;
     }
 
@@ -26,20 +25,14 @@ public class AiController : ControllerBase
     public async Task<IActionResult> Ask(string prompt)
     {
         if (string.IsNullOrWhiteSpace(prompt))
-            return BadRequest(new { error = "Prompt is required" });
-
-        _logger.LogInformation("Received prompt: {Prompt}", prompt);
+            return BadRequest(new { error = "Prompt required" });
 
         var result = await _featherlessService.GetOffersAsync(prompt);
-
         if (result == null)
-        {
-            _logger.LogWarning("AI returned null result");
             return BadRequest(new { error = "AI returned empty result" });
-        }
 
-        _logger.LogInformation("Returning result with {Count} alternatives", 
-            result.Alternatives?.Count ?? 0);
+        // IMPORTANT: безопасно записываем историю
+        _ = _mongo.InsertChatAsync(prompt, result.Summary);
 
         return Ok(result);
     }
@@ -47,7 +40,7 @@ public class AiController : ControllerBase
     [HttpGet("history")]
     public async Task<IActionResult> History(int limit = 50)
     {
-        var history = await _mongoDbService.GetChatHistoryAsync(limit);
+        var history = await _mongo.GetChatHistoryAsync(limit);
         return Ok(history);
     }
 }
