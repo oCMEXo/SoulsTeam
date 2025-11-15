@@ -35,7 +35,7 @@ builder.Services.AddCors(options =>
                 "http://localhost:5173",
                 "https://localhost:5173",
                 "http://localhost:8080",
-                "https://souls-team-576376474100.europe-north1.run.app"
+                "https://soulsteam-576376474100.europe-west1.run.app"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
