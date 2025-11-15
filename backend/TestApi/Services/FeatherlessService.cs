@@ -11,15 +11,13 @@ public class FeatherlessService
     private readonly string _model;
 
     private const string SystemPrompt = @"
-Ты — AI-ассистент по финансовой грамотности.
-Помогай человеку принимать выгодные решения. 
-Пиши понятно, коротко, без воды. 
-Не придумывай статистику. 
-Будь доброжелательным.
+Ты ассистент, который помогает человеку принимать выгодные финансовые решения.
+Отвечай кратко, полезно и ясно.
 ";
 
+    // Мягкая, но строгая инструкция
     private const string JsonInstruction = @"
-Верни строго JSON формата:
+Ответи строго JSON формата:
 
 {
   ""summary"": ""string"",
@@ -47,11 +45,9 @@ public class FeatherlessService
 }
 
 Правила:
-- Всегда заполняй ВСЕ поля.
-- Если данных нет — придумай реалистичные.
-- original НЕ может быть пустым.
-- alternatives должен содержать минимум 1 вариант.
-- Никакого текста вне JSON.
+- Никакого текста до или после JSON.
+- Все строки должны быть заполнены.
+- alternatives должен содержать хотя бы 1 элемент.
 ";
 
     public FeatherlessService(string apiKey, string model)
@@ -63,18 +59,18 @@ public class FeatherlessService
             new AuthenticationHeaderValue("Bearer", apiKey);
     }
 
+    // Вырезает JSON, если модель добавила лишний текст
     private string ExtractJson(string text)
     {
         int start = text.IndexOf('{');
         int end = text.LastIndexOf('}');
 
-        if (start == -1 || end == -1 || end <= start)
-            return "{}";
+        if (start == -1 || end == -1) return "{}";
 
         return text.Substring(start, end - start + 1);
     }
 
-    public async Task<AiOffersResponse?> GetOffersAsync(string userPrompt)
+    public async Task<AiResult?> GetOffersAsync(string userPrompt)
     {
         var body = new
         {
@@ -95,19 +91,25 @@ public class FeatherlessService
         var response = await _httpClient.PostAsync("chat/completions", content);
         response.EnsureSuccessStatusCode();
 
-        var json = await response.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(json);
+        string rawJson = await response.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(rawJson);
 
-        var raw = doc.RootElement
-            .GetProperty("choices")[0]
+        string? modelText =
+            doc.RootElement.GetProperty("choices")[0]
             .GetProperty("message")
             .GetProperty("content")
             .GetString();
 
-        if (string.IsNullOrWhiteSpace(raw))
+        if (string.IsNullOrWhiteSpace(modelText))
             return null;
 
-        var cleanJson = ExtractJson(raw);
-        return JsonSerializer.Deserialize<AiOffersResponse>(cleanJson);
+        // гарантируем чистый JSON
+        string cleanJson = ExtractJson(modelText);
+
+        // Десериализация в AiResult
+        return JsonSerializer.Deserialize<AiResult>(
+            cleanJson,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+        );
     }
 }

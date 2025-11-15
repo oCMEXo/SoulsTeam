@@ -1,6 +1,11 @@
-namespace TestApi.Models;
+public class AiResult
+{
+    public string Summary { get; set; } = "";
+    public OriginalDto Original { get; set; } = new();
+    public List<AlternativeDto> Alternatives { get; set; } = new();
+}
 
-public class OriginalOffer
+public class OriginalDto
 {
     public string Name { get; set; } = "";
     public string Items { get; set; } = "";
@@ -9,7 +14,7 @@ public class OriginalOffer
     public string DeliveryTime { get; set; } = "";
 }
 
-public class AlternativeOffer
+public class AlternativeDto
 {
     public string Name { get; set; } = "";
     public string Items { get; set; } = "";
@@ -21,11 +26,4 @@ public class AlternativeOffer
     public string DeliveryTime { get; set; } = "";
     public double Rating { get; set; }
     public bool IsRecommended { get; set; }
-}
-
-public class AiOffersResponse
-{
-    public string Summary { get; set; } = "";
-    public OriginalOffer Original { get; set; } = new();
-    public List<AlternativeOffer> Alternatives { get; set; } = new();
 }

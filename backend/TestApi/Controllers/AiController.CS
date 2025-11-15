@@ -16,22 +16,17 @@ public class AiController : ControllerBase
         _mongoDbService = mongoDbService;
     }
 
-    [HttpGet("ask")]
-    public async Task<IActionResult> Ask([FromQuery] string prompt)
-    {
-        if (string.IsNullOrWhiteSpace(prompt))
-            return BadRequest(new { error = "Prompt не может быть пустым" });
+[HttpGet("ask")]
+public async Task<IActionResult> Ask(string prompt)
+{
+    var result = await _featherlessService.GetOffersAsync(prompt);
 
-        var result = await _featherlessService.GetOffersAsync(prompt);
+    if (result == null)
+        return BadRequest(new { error = "AI returned empty result" });
 
-        if (result == null)
-            return StatusCode(500, new { error = "AI вернул пустой ответ" });
+    return Ok(result); // ← фронт получает JSON 1-в-1 как нужно
+}
 
-        // сохраняем только текст
-        await _mongoDbService.InsertChatAsync(prompt, result.Summary);
-
-        return Ok(result);
-    }
 
     [HttpGet("history")]
     public async Task<IActionResult> History(int limit = 50)
