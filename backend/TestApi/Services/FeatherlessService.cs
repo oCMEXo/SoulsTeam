@@ -51,35 +51,41 @@ public class FeatherlessService
    - Без осуждения, особенно когда речь о миграции, ментальном здоровье и деньгах.
 ";
 
-    // 📌 JSON-инструкция — отдельным блоком
+    // 📌 JSON-инструкция — ЖЁСТКАЯ, ЧТОБЫ МОДЕЛЬ НЕ ТУПОИЛА
     private const string JsonInstruction = @"
-Ты обязан вернуть строго JSON:
+Ты обязан вернуть СТРОГО JSON в формате:
 
 {
   ""summary"": ""string"",
-  ""offers"": [
+  ""original"": {
+    ""name"": ""string"",
+    ""items"": ""string"",
+    ""price"": ""string"",
+    ""location"": ""string"",
+    ""deliveryTime"": ""string""
+  },
+  ""alternatives"": [
     {
       ""name"": ""string"",
       ""items"": ""string"",
-      ""price"": 0.0,
-      ""savings"": 0.0,
-      ""savingsPercent"": 0.0,
+      ""price"": ""string"",
+      ""savings"": ""string"",
+      ""savingsPercent"": ""string"",
+      ""extraBenefit"": ""string"",
       ""location"": ""string"",
       ""deliveryTime"": ""string"",
       ""rating"": 0.0,
-      ""isRecommended"": true,
-      ""isOriginal"": true
+      ""isRecommended"": true
     }
-  ],
-  ""totalPrice"": 0.0,
-  ""totalSavings"": 0.0
+  ]
 }
 
 ТРЕБОВАНИЯ:
-- НЕ используй проценты в виде ""15%"" → только число 15.
 - НЕ добавляй текст вне JSON.
 - НЕ используй markdown.
-- price/savings/savingsPercent — только number.
+- price/savings/savingsPercent — строки.
+- НЕ пиши '%' в savingsPercent.
+- ALWAYS return the full object even if empty.
 ";
 
     public FeatherlessService(string apiKey, string model)
@@ -91,7 +97,7 @@ public class FeatherlessService
             new AuthenticationHeaderValue("Bearer", apiKey);
     }
 
-    // Вытаскиваем JSON из ответа модели
+    // 🛠 Вырезает JSON, даже если модель прислала мусор вокруг
     private string ExtractJson(string text)
     {
         int start = text.IndexOf('{');
