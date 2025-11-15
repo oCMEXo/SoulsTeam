@@ -1,93 +1,172 @@
-💸 MoneyCouch — Smart Assistant for Better Shopping Decisions
+🌙 MoneyCouch — Full-Stack AI-Powered Assistant
 
-MoneyCouch is an AI-powered assistant that helps you find better prices, compare alternatives, and save money.
-The project is built in a modern dark theme and includes a React frontend, .NET backend, and integration with Featherless AI.
+MoneyCouch is a full-stack project that blends a stylish dark-themed frontend with a powerful AI-driven backend.
+The system uses modern technologies to provide smart recommendations, structured financial insights, and a polished experience.
 
-Original design (Figma):
-https://www.figma.com/design/GqKzJ7RQsaTL59GoO1zyYJ/Создание-сайта-в-темной-теме
+✨ Features
+🖥️ Frontend (React + TypeScript + Vite)
 
-🚀 Project Setup
-1) Install frontend dependencies
+🎨 Dark, modern UI
 
-npm i
+🗂️ Category-based item search (food, clothes, groceries, coffee)
 
-2) Start the frontend (Vite)
+🤖 AI-powered suggestions and price comparisons
 
-npm run dev
+🛒 Dynamic shopping cart with automatic savings calculation
 
-Frontend will be available at:
+🎯 Smart filters (healthy, fast, traditional, budget, premium)
 
-http://localhost:5173
+🔍 Full JSON response viewer for debugging
 
-3) Install SVG icons (Lucide)
+🎬 Smooth transitions and animations
 
+⚙️ Backend (C# .NET Web API)
+
+🤖 Featherless AI API integration
+
+🧹 Strong JSON cleaning + validation
+
+📡 Stable API endpoints
+
+🗃️ MongoDB support for storing history
+
+📝 Full logging (Console + Debug)
+
+🔐 CORS configured for frontend communication
+
+📁 Project Structure
+
+SoulsTeam
+┣ 📦 backend/
+┃ ┗ TestApi/
+┃ ┣ Controllers/
+┃ ┣ Services/
+┃ ┣ Models/
+┃ ┗ Program.cs
+┣ 🎨 src/ (React frontend)
+┃ ┣ components/
+┃ ┣ pages/
+┃ ┣ App.tsx
+┃ ┗ main.tsx
+┣ 📂 public/
+┣ 📜 package.json
+┗ ⚡ vite.config.ts
+
+🧰 Technologies
+Frontend
+
+⚛️ React
+
+⌨️ TypeScript
+
+⚡ Vite
+
+🎨 lucide-react icons
+
+🎛️ Modern component structure
+
+Backend
+
+🧩 .NET 9
+
+🚀 C# Web API
+
+🗄️ MongoDB
+
+🤖 Featherless AI
+
+📘 Swagger documentation
+
+🚀 Getting Started
+🔧 1. Clone the repository
+
+git clone https://github.com/oCMEXo/SoulsTeam
+
+cd SoulsTeam
+
+🖥️ Frontend Setup
+
+📥 Install dependencies:
+npm install
+
+🖼️ Install icon library:
 npm install lucide-react
 
-🖥 Start the backend (.NET API)
+▶️ Start development server:
+npm run dev
 
-Inside the backend directory run:
+Frontend starts at: http://localhost:5173
 
+🛠️ Backend Setup (.NET)
+
+Go to the backend folder:
+cd backend/TestApi
+
+Restore dependencies:
+dotnet restore
+
+Run backend server:
 dotnet run
 
-Backend runs on:
+Backend runs at: http://localhost:5032
 
-http://localhost:5032
+🌐 API Endpoints
+🤖 /ai/ask?prompt=...
 
-Main API endpoints:
+Sends a request to the AI and returns structured JSON.
 
-GET /ai/ask?prompt=
-→ Sends query to the AI
+📜 /ai/history
 
-GET /ai/history
-→ Returns prompt/response history from MongoDB
+Returns chat history stored in MongoDB.
 
-🧠 Featherless AI Configuration
+📦 Example AI Response
 
-In appsettings.json:
+The AI returns:
 
+🧠 summary — quick explanation
+
+🛍️ original — main option user selected
+
+🔄 alternatives — cheaper/better options with:
+
+💵 savings
+
+📉 savingsPercent
+
+⭐ rating
+
+🎁 extraBenefit
+
+🚚 deliveryTime
+
+Backend ensures the JSON matches the expected structure.
+
+🔐 Environment Variables
+
+Create appsettings.json in backend/TestApi:
+
+{
 "Featherless": {
 "ApiKey": "YOUR_API_KEY",
-"Model": "deepseek-chat"
-}
-
-🗄 MongoDB Configuration
-
+"Model": "MODEL_NAME"
+},
 "MongoDb": {
 "ConnectionString": "mongodb://localhost:27017",
-"DatabaseName": "MoneyCouchDB"
+"DatabaseName": "SoulsTeamDb"
+}
 }
 
-MongoDB is used to store request history.
-You can disable this logic if needed.
+📌 Project Status
 
-🎨 Frontend Structure
+The project is fully working locally.
+Both backend and frontend communicate correctly.
+AI integration and JSON mapping work reliably.
 
-src/
-├─ components/
-│ ├─ Demo.tsx — main UI, AI logic, cart
-│ └─ ui/ — cards, buttons, badges
-├─ App.tsx
-├─ index.tsx
-└─ styles/
+🤝 Contributing
 
-✨ Features of MoneyCouch
+Ideas, improvements, and pull requests are welcome!
+Help improve UI, AI logic, or backend stability.
 
-✔ Category-based search (food, groceries, clothing, coffee)
-✔ Smart filters (budget, healthy, fast, premium, traditional)
-✔ Real-time price analysis using AI
-✔ Best alternative selection (isRecommended)
-✔ Automatic savings calculation
-✔ Full shopping cart with totals
-✔ Full AI JSON response preview
-✔ Dark premium theme
+⭐ Support the Project
 
-📦 Build for Production
-
-npm run build
-
-📸 Future Improvements (Roadmap)
-
-• User accounts / login
-• Save favorite deals
-• Push notifications about discounts
-• Mobile version (React Native)
+If you like SoulsTeam — give it a star on GitHub! ⭐
