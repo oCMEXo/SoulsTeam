@@ -192,13 +192,21 @@ export function Demo({ onBackToHome }: DemoProps) {
     setRawResponse(null);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 try {
   const filtersText =
     selectedFilters.length > 0
       ? selectedFilters.join(", ")
       : "no additional filters";
+=======
+    try {
+      const filtersText =
+          selectedFilters.length > 0
+              ? selectedFilters.join(", ")
+              : "no additional filters";
+>>>>>>> parent of f3fba67 (Update Demo.tsx)
 
-  const prompt = `
+      const prompt = `
 Category: ${selectedCategory}
 Budget: ${budget || "-"} €
 User wants: ${searchQuery || "-"}
@@ -218,12 +226,13 @@ Filters: ${filtersText}
 >>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
 `.trim();
 
-  console.log("Sending prompt:", prompt);
-  console.log("API_BASE =", API_BASE);
+      console.log("Sending prompt:", prompt);
 
-  const url = `${API_BASE.replace(/\/+$/, "")}/ai/ask?prompt=${encodeURIComponent(prompt)}`;
-  console.log("Request URL =", url);
+const res = await fetch(
+  `${API_BASE}/ai/ask?prompt=${encodeURIComponent(prompt)}`
+);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   const res = await fetch(url);
 =======
@@ -235,20 +244,22 @@ Filters: ${filtersText}
         return;
       }
 >>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+=======
+// временный лог
+const rawText = await res.text();
+console.log("RAW RESPONSE TEXT:", rawText);
+>>>>>>> parent of f3fba67 (Update Demo.tsx)
 
-  const rawText = await res.text();
-  console.log("RAW RESPONSE TEXT:", rawText);
+// если статус не ок – покажем это и выйдем
+if (!res.ok) {
+  setAiError(`Server error: ${res.status} – ${rawText}`);
+  setCurrentStep("results");
+  return;
+}
 
-  if (!res.ok) {
-    console.error("Server error:", res.status, rawText);
-    setAiError(`Server error: ${res.status} – ${rawText}`);
-    setCurrentStep("results");
-    return;
-  }
-
-  const data: AiResponse = JSON.parse(rawText);
-  console.log("AI parsed response:", data);
-  setRawResponse(data);
+// если всё ок – ещё раз распарсим как JSON
+const data: AiResponse = JSON.parse(rawText);
+console.log("AI parsed response:", data);
 
       if (!data || data.original === undefined) {
         console.error("Missing 'original' in response:", data);
