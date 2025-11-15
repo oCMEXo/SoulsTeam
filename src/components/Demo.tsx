@@ -193,17 +193,23 @@ export function Demo({ onBackToHome }: DemoProps) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 try {
   const filtersText =
     selectedFilters.length > 0
       ? selectedFilters.join(", ")
       : "no additional filters";
 =======
+=======
+>>>>>>> parent of f3fba67 (Update Demo.tsx)
     try {
       const filtersText =
           selectedFilters.length > 0
               ? selectedFilters.join(", ")
               : "no additional filters";
+<<<<<<< HEAD
+>>>>>>> parent of f3fba67 (Update Demo.tsx)
+=======
 >>>>>>> parent of f3fba67 (Update Demo.tsx)
 
       const prompt = `
@@ -234,6 +240,7 @@ const res = await fetch(
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   const res = await fetch(url);
 =======
       if (!res.ok) {
@@ -244,6 +251,11 @@ const res = await fetch(
         return;
       }
 >>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+=======
+// временный лог
+const rawText = await res.text();
+console.log("RAW RESPONSE TEXT:", rawText);
+>>>>>>> parent of f3fba67 (Update Demo.tsx)
 =======
 // временный лог
 const rawText = await res.text();
