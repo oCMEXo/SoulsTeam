@@ -22,6 +22,6 @@ COPY --from=build /app .
 # Render требует запуск через порт 8080
 ENV ASPNETCORE_URLS=http://+:3000
 
-EXPOSE 8080
+EXPOSE 3000
 
 ENTRYPOINT ["dotnet", "TestApi.dll"]
