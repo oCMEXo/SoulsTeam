@@ -1,50 +1,34 @@
-# =======================
-# 1. СБОРКА ФРОНТА (Vite)
-# =======================
-FROM node:18-alpine AS frontend-build
+# ============== 1. СБОРКА ФРОНТА ==============
+FROM node:18-alpine AS build
 WORKDIR /app
 
-# копируем frontend-зависимости
+# Копируем манифесты и конфиги
 COPY package*.json ./
-COPY vite.config.* tsconfig*.json ./
+COPY tsconfig*.json vite.config.ts ./
 
-# папки с кодом
+# Копируем исходники
 COPY src ./src
 COPY public ./public
 
+# Установка зависимостей и сборка
 RUN npm install
 RUN npm run build
 
-# ==================================
-# 2. СБОРКА BACKEND'А (ASP.NET Core)
-# ==================================
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS backend-build
-WORKDIR /src
-
-# Копируем .csproj
-COPY backend/*.csproj ./backend/
-RUN dotnet restore ./backend/*.csproj
-
-# Копируем остальной C# код
-COPY backend/. ./backend/
-
-# Кладём собранный фронт в wwwroot
-COPY --from=frontend-build /app/dist ./backend/wwwroot
-
-WORKDIR /src/backend
-RUN dotnet publish -c Release -o /app/publish
-
-# ======================
-# 3. RUNTIME-КОНТЕЙНЕР
-# ======================
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# ============== 2. RUNTIME-СЕРВЕР ==============
+FROM node:18-alpine AS final
 WORKDIR /app
 
-COPY --from=backend-build /app/publish .
+ENV NODE_ENV=production
 
-# В Cloud Run принято слушать 8080
-ENV ASPNETCORE_URLS=http://+:8080
+# Ставим только прод-зависимости (Express и т.д.)
+COPY package*.json ./
+RUN npm install --omit=dev
+
+# Кладём собранный фронт и сервер
+COPY --from=build /app/build ./build
+COPY server.js ./server.js
+
+# Cloud Run будет ходить на 8080
 EXPOSE 8080
 
-# ЗДЕСЬ ВАЖНО: замени TestApi.dll на ИМЯ твоего dll (проекта)
-ENTRYPOINT ["dotnet", "TestApi.dll"]
+CMD ["node", "server.js"]
