@@ -34,9 +34,9 @@ builder.Services.AddCors(options =>
                 "https://localhost:3001",
                 "http://localhost:5173",
                 "https://localhost:5173",
-                "http://localhost:8080"
-                // сюда потом можно добавить URL Cloud Run, когда он будет известен
-                // "https://soulsteam-XXXXXX-uc.a.run.app"
+                "http://localhost:8080",
+                " https://soulsteam-576376474100.europe-west1.run.app"
+                
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
