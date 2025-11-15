@@ -10,24 +10,15 @@ public class FeatherlessService
     private readonly HttpClient _httpClient;
     private readonly string _model;
 
-    // 💬 ТВОЙ СИСТЕМНЫЙ ПРОМПТ — БЕЗ ИЗМЕНЕНИЙ
     private const string SystemPrompt = @"
 Ты — AI-ассистент по финансовой грамотности.
-
-Задачи:
-- Помогать человеку принимать выгодные финансовые решения.
-- Давать короткие, понятные и практичные рекомендации.
-- Учитывать психологические факторы: стресс, тревога, поддержка семьи, чувство принадлежности.
-Правила:
-- Пиши просто и структурировано.
-- Никакой медицинской диагностики.
-- Не придумывай факты и статистику.
-- Будь доброжелательным и поддерживающим.
+Помогай человеку принимать выгодные решения. 
+Пиши понятно, коротко, без воды. 
+Не придумывай статистику. 
+Будь доброжелательным.
 ";
 
-
-    // 📌 JSON-инструкция — ЖЁСТКАЯ, ЧТОБЫ МОДЕЛЬ НЕ ТУПОИЛА
-private const string JsonInstruction = @"
+    private const string JsonInstruction = @"
 Верни строго JSON формата:
 
 {
@@ -56,9 +47,12 @@ private const string JsonInstruction = @"
 }
 
 Правила:
-- Всегда заполни поля осмысленными значениями.
-- Можно использовать придуманные, но реалистичные данные.
-- Никакого текста вне JSON.";
+- Всегда заполняй ВСЕ поля.
+- Если данных нет — придумай реалистичные.
+- original НЕ может быть пустым.
+- alternatives должен содержать минимум 1 вариант.
+- Никакого текста вне JSON.
+";
 
     public FeatherlessService(string apiKey, string model)
     {
@@ -69,7 +63,6 @@ private const string JsonInstruction = @"
             new AuthenticationHeaderValue("Bearer", apiKey);
     }
 
-    // 🛠 Вырезает JSON, даже если модель прислала мусор вокруг
     private string ExtractJson(string text)
     {
         int start = text.IndexOf('{');
@@ -83,18 +76,18 @@ private const string JsonInstruction = @"
 
     public async Task<AiOffersResponse?> GetOffersAsync(string userPrompt)
     {
-        var requestBody = new
+        var body = new
         {
             model = _model,
             messages = new[]
             {
-                new { role = "system", content = SystemPrompt + "\n\n" + JsonInstruction },
+                new { role = "system", content = SystemPrompt + "\n" + JsonInstruction },
                 new { role = "user", content = userPrompt }
             }
         };
 
         var content = new StringContent(
-            JsonSerializer.Serialize(requestBody),
+            JsonSerializer.Serialize(body),
             Encoding.UTF8,
             "application/json"
         );
@@ -105,17 +98,16 @@ private const string JsonInstruction = @"
         var json = await response.Content.ReadAsStringAsync();
         using var doc = JsonDocument.Parse(json);
 
-        var aiText = doc.RootElement
+        var raw = doc.RootElement
             .GetProperty("choices")[0]
             .GetProperty("message")
             .GetProperty("content")
             .GetString();
 
-        if (string.IsNullOrWhiteSpace(aiText))
+        if (string.IsNullOrWhiteSpace(raw))
             return null;
 
-        var cleanJson = ExtractJson(aiText);
-
+        var cleanJson = ExtractJson(raw);
         return JsonSerializer.Deserialize<AiOffersResponse>(cleanJson);
     }
 }

@@ -16,10 +16,10 @@ public class AlternativeOffer
     public string Price { get; set; } = "";
     public string Savings { get; set; } = "";
     public string SavingsPercent { get; set; } = "";
-    public string? ExtraBenefit { get; set; }
+    public string ExtraBenefit { get; set; } = "";
     public string Location { get; set; } = "";
     public string DeliveryTime { get; set; } = "";
-    public double? Rating { get; set; }
+    public double Rating { get; set; }
     public bool IsRecommended { get; set; }
 }
 
