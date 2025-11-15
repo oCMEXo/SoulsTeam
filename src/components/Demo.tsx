@@ -60,6 +60,7 @@ interface ResultAlternative {
   filterMatch?: string;
 }
 
+// форма original/alternative, которую шлёт AI
 interface AiOriginalObject {
   name?: string;
   items?: string;
@@ -82,6 +83,11 @@ interface AiAlternativeObject {
   filterMatch?: string;
 }
 
+/**
+ * Поддерживает оба варианта:
+ * 1) { original: "строка", alternatives: [...] }
+ * 2) { summary: "строка", original: {..}, alternatives: [...] }
+ */
 interface AiResponse {
   summary?: string;
   original?: string | AiOriginalObject;
@@ -93,7 +99,11 @@ interface Results {
   alternatives: ResultAlternative[];
 }
 
+<<<<<<< HEAD
 const API_BASE = import.meta.env.VITE_API_BASE_URL || window.location.origin;
+=======
+const API_BASE = "http://localhost:5032";
+>>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
 
 export function Demo({ onBackToHome }: DemoProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -106,16 +116,17 @@ export function Demo({ onBackToHome }: DemoProps) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCartNotification, setShowCartNotification] = useState(false);
 
+
   const [results, setResults] = useState<Results | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [rawResponse, setRawResponse] = useState<AiResponse | null>(null);
 
   const categories = [
-    { id: "food", emoji: "🍔", label: "Food" },
-    { id: "groceries", emoji: "🛒", label: "Groceries" },
-    { id: "clothes", emoji: "👕", label: "Clothes" },
-    { id: "coffee", emoji: "☕", label: "Coffee" },
+    { id: "food", emoji: "🍔", label: "Еда" },
+    { id: "groceries", emoji: "🛒", label: "Продукты" },
+    { id: "clothes", emoji: "👕", label: "Одежда" },
+    { id: "coffee", emoji: "☕", label: "Кофе" },
   ];
 
   const filters: {
@@ -127,31 +138,31 @@ export function Demo({ onBackToHome }: DemoProps) {
     {
       id: "healthy",
       emoji: "🥗",
-      label: "Healthy",
+      label: "Здоровое питание",
       categories: ["food", "groceries", "coffee"],
     },
     {
       id: "fast",
       emoji: "⚡",
-      label: "Fast Food",
+      label: "Фастфуд",
       categories: ["food", "coffee"],
     },
     {
       id: "traditional",
       emoji: "🍲",
-      label: "Traditional",
+      label: "Традиционное",
       categories: ["food", "groceries"],
     },
     {
       id: "budget",
       emoji: "💰",
-      label: "Budget",
+      label: "Экономия",
       categories: ["food", "groceries", "clothes", "coffee"],
     },
     {
       id: "premium",
       emoji: "⭐",
-      label: "Premium",
+      label: "Премиум",
       categories: ["food", "clothes", "coffee"],
     },
   ];
@@ -169,7 +180,7 @@ export function Demo({ onBackToHome }: DemoProps) {
     );
   };
 
-  // ---------- AI REQUEST ----------
+  // ---------- AI запрос ----------
 
   const handleSearch = async () => {
     if (!selectedCategory) return;
@@ -180,6 +191,7 @@ export function Demo({ onBackToHome }: DemoProps) {
     setAiSummary(null);
     setRawResponse(null);
 
+<<<<<<< HEAD
 try {
   const filtersText =
     selectedFilters.length > 0
@@ -191,6 +203,19 @@ Category: ${selectedCategory}
 Budget: ${budget || "-"} €
 User wants: ${searchQuery || "-"}
 Filters: ${filtersText}
+=======
+    try {
+      const filtersText =
+          selectedFilters.length > 0
+              ? selectedFilters.join(", ")
+              : "без дополнительных фильтров";
+
+      const prompt = `
+Категория: ${selectedCategory}
+Бюджет: ${budget || "-"} €
+Что ищет пользователь: ${searchQuery || "-"}
+Фильтры: ${filtersText}
+>>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
 `.trim();
 
   console.log("Sending prompt:", prompt);
@@ -199,7 +224,17 @@ Filters: ${filtersText}
   const url = `${API_BASE.replace(/\/+$/, "")}/ai/ask?prompt=${encodeURIComponent(prompt)}`;
   console.log("Request URL =", url);
 
+<<<<<<< HEAD
   const res = await fetch(url);
+=======
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Server error:", res.status, text);
+        setAiError(`Ошибка сервера: ${res.status}`);
+        setCurrentStep("results");
+        return;
+      }
+>>>>>>> parent of 0ad489a (Dont Touch Final Project PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
 
   const rawText = await res.text();
   console.log("RAW RESPONSE TEXT:", rawText);
@@ -217,43 +252,47 @@ Filters: ${filtersText}
 
       if (!data || data.original === undefined) {
         console.error("Missing 'original' in response:", data);
-        setAiError("AI did not return original item information");
+        setAiError("AI не вернул информацию об оригинальном варианте");
         setCurrentStep("results");
         return;
       }
 
-      // --- Summary text ---
+      // --- 1. Текст-саммари ---
       if (typeof data.original === "string") {
+        // старый формат: весь текст в original
         setAiSummary(data.original);
       } else {
+        // новый формат: summary отдельно
         setAiSummary(data.summary || null);
       }
 
-      // --- User choice card ---
+      // --- 2. Карточка "Ваш выбор" ---
       let original: ResultOriginal;
 
       if (typeof data.original === "string") {
+        // original как текст — подставляем свои данные
         const nameFromCategory =
             selectedCategory === "food"
-                ? "You want to eat"
+                ? "Вы хотите поесть"
                 : selectedCategory === "coffee"
-                    ? "You want coffee"
+                    ? "Вы хотите кофе"
                     : selectedCategory === "groceries"
-                        ? "You want groceries"
-                        : "Your choice";
+                        ? "Вы хотите купить продукты"
+                        : "Ваш выбор";
 
         original = {
           name: searchQuery.trim() || nameFromCategory,
           items:
-              `Budget: ${budget || "-"} ` +
-              (selectedFilters.length ? `• Filters: ${filtersText}` : ""),
+              `Бюджет: ${budget || "-"} ` +
+              (selectedFilters.length ? ` • Фильтры: ${filtersText}` : ""),
           price: budget || "0",
           location: "—",
           deliveryTime: "—",
         };
       } else {
+        // original — объект от AI
         original = {
-          name: data.original.name || "Your choice",
+          name: data.original.name || "Ваш выбор",
           items: data.original.items || "",
           price: String(data.original.price ?? "0"),
           location: data.original.location || "—",
@@ -265,7 +304,7 @@ Filters: ${filtersText}
           original.price.toString().replace(",", ".")
       );
 
-      // --- Alternatives ---
+      // --- 3. Альтернативы ---
       let alternatives: ResultAlternative[] = [];
 
       if (Array.isArray(data.alternatives) && data.alternatives.length > 0) {
@@ -293,15 +332,15 @@ Filters: ${filtersText}
               }
 
               return {
-                name: a.name || `Option ${i + 1}`,
+                name: a.name || `Вариант ${i + 1}`,
                 items: a.items || "",
                 price: priceStr,
                 location: a.location || "—",
                 deliveryTime: a.deliveryTime || "—",
                 extraBenefit: a.extraBenefit,
-                rating: typeof a.rating === "number" ? a.rating : undefined,
-                savings: (
-                    a.savings !== undefined
+                rating:
+                    typeof a.rating === "number" ? a.rating : undefined,
+                savings: (a.savings !== undefined
                         ? parseFloat(String(a.savings).replace(",", "."))
                         : savingsNum
                 ).toFixed(2),
@@ -311,6 +350,7 @@ Filters: ${filtersText}
               };
             });
 
+        // если никто не помечен как рекомендованный — выберем по минимальной цене
         if (alternatives.length > 0 && !alternatives.some((a) => a.isRecommended)) {
           const bestIndex = alternatives.reduce((bestIdx, alt, idx) => {
             const price = parseFloat(alt.price.replace(",", "."));
@@ -332,8 +372,8 @@ Filters: ${filtersText}
     } catch (e) {
       console.error("Fetch/parse error:", e);
       setAiError(
-          `Failed to process AI response: ${
-              e instanceof Error ? e.message : "unknown error"
+          `Не удалось обработать ответ AI: ${
+              e instanceof Error ? e.message : "неизвестная ошибка"
           }`
       );
       setCurrentStep("results");
@@ -352,7 +392,7 @@ Filters: ${filtersText}
     setRawResponse(null);
   };
 
-  // ---------- Cart ----------
+  // ---------- корзина ----------
 
   const addToCart = (item: CartItem) => {
     const existingItem = cart.find((cartItem) => cartItem.id === item.id);
@@ -422,14 +462,14 @@ Filters: ${filtersText}
                   <div>
                     <h1 className="text-xl">MoneyMoney Demo</h1>
                     <p className="text-xs text-zinc-500">
-                      AI finds savings for you
+                      AI находит выгоду для вас
                     </p>
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/30">
-                  Demo Mode
+                  Демо режим
                 </Badge>
                 {cart.length > 0 && (
                     <button
@@ -449,25 +489,25 @@ Filters: ${filtersText}
 
         {/* Main Content */}
         <div className="mx-auto max-w-5xl px-6 py-12">
-          {/* Step: Search */}
+          {/* Шаг поиска */}
           {currentStep === "search" && (
               <div className="space-y-8 animate-in fade-in duration-500">
                 <div className="text-center space-y-4">
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20">
                     <Sparkles className="size-4 text-blue-400" />
                     <span className="text-sm text-blue-300">
-                  Try AI assistant now
+                  Попробуйте AI-советник прямо сейчас
                 </span>
                   </div>
                   <h2 className="text-3xl sm:text-4xl text-zinc-100">
-                    What do you want to buy?
+                    Что вы хотите купить?
                   </h2>
                   <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-                    Choose a category and AI will find the best options for you
+                    Выберите категорию, и AI найдет более выгодные варианты для вас
                   </p>
                 </div>
 
-                {/* Categories */}
+                {/* Категории */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
                   {categories.map((cat) => (
                       <button
@@ -487,18 +527,18 @@ Filters: ${filtersText}
 
                 {selectedCategory && (
                     <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in duration-300">
-                      {/* Budget & Query */}
+                      {/* Бюджет и запрос */}
                       <Card className="bg-zinc-900/50 border-zinc-800 p-6">
                         <div className="space-y-4">
                           <div>
                             <label className="text-sm text-zinc-400 mb-2 block">
-                              Your budget
+                              Сколько хотите потратить?
                             </label>
                             <div className="relative">
                               <Euro className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-zinc-500" />
                               <input
                                   type="number"
-                                  placeholder="Example: 10"
+                                  placeholder="Например: 10"
                                   value={budget}
                                   onChange={(e) => setBudget(e.target.value)}
                                   className="w-full h-14 pl-12 pr-4 bg-zinc-800/50 border-2 border-zinc-700 rounded-xl text-zinc-100 placeholder:text-zinc-600 outline-none focus:border-blue-500 transition-colors"
@@ -508,20 +548,20 @@ Filters: ${filtersText}
 
                           <div>
                             <label className="text-sm text-zinc-400 mb-2 block">
-                              What exactly are you looking for?
+                              Что именно ищете?
                             </label>
                             <div className="flex items-center gap-3">
                               <Search className="size-5 text-zinc-500" />
                               <input
                                   type="text"
-                                  placeholder={`Example: ${
+                                  placeholder={`Например: ${
                                       selectedCategory === "food"
-                                          ? "Burgers"
+                                          ? "Бургеры"
                                           : selectedCategory === "coffee"
-                                              ? "Latte"
+                                              ? "Латте"
                                               : selectedCategory === "groceries"
-                                                  ? "Vegetables"
-                                                  : "T-shirt"
+                                                  ? "Овощи и фрукты"
+                                                  : "Футболка"
                                   }`}
                                   value={searchQuery}
                                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -532,11 +572,11 @@ Filters: ${filtersText}
                         </div>
                       </Card>
 
-                      {/* Filters */}
+                      {/* Фильтры */}
                       {getAvailableFilters().length > 0 && (
                           <Card className="bg-zinc-900/50 border-zinc-800 p-6">
                             <label className="text-sm text-zinc-400 mb-3 block">
-                              Preferences
+                              Выберите предпочтения
                             </label>
                             <div className="flex flex-wrap gap-2">
                               {getAvailableFilters().map((filter) => (
@@ -557,20 +597,20 @@ Filters: ${filtersText}
                           </Card>
                       )}
 
-                      {/* Search button */}
+                      {/* Кнопка поиска */}
                       <Button
                           onClick={handleSearch}
                           disabled={!budget}
                           className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white h-14 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Sparkles className="size-5 mr-2" />
-                        {budget ? `Find options for ${budget}€` : "Enter budget"}
+                        {budget ? `Найти варианты на ${budget}€` : "Укажите бюджет"}
                       </Button>
 
                       <div className="p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl">
                         <p className="text-sm text-blue-400 text-center">
-                          💡 AI will search for the best deals based on your budget
-                          and preferences
+                          💡 AI найдет лучшие варианты в вашем бюджете с учетом ваших
+                          предпочтений
                         </p>
                       </div>
                     </div>
@@ -578,7 +618,7 @@ Filters: ${filtersText}
               </div>
           )}
 
-          {/* ANALYZING */}
+          {/* Шаг анализа */}
           {currentStep === "analyzing" && (
               <div className="space-y-8 animate-in fade-in duration-500">
                 <div className="text-center space-y-6">
@@ -586,13 +626,13 @@ Filters: ${filtersText}
                     <Sparkles className="size-10 text-blue-400" />
                   </div>
                   <h2 className="text-2xl text-zinc-100">
-                    AI is analyzing prices...
+                    AI анализирует цены...
                   </h2>
                   <div className="space-y-3 max-w-md mx-auto">
                     {[
-                      "Scanning nearby restaurants",
-                      "Comparing prices and discounts",
-                      "Searching for best deals",
+                      "Сканирование ресторанов поблизости",
+                      "Сравнение цен и акций",
+                      "Поиск лучших предложений",
                     ].map((text, i) => (
                         <div
                             key={i}
@@ -608,14 +648,14 @@ Filters: ${filtersText}
               </div>
           )}
 
-          {/* RESULTS */}
+          {/* Результаты */}
           {currentStep === "results" && (
               <div className="space-y-8 animate-in fade-in duration-500">
                 <div className="text-center space-y-2">
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30">
                     <Check className="size-4 text-green-400" />
                     <span className="text-sm text-green-400">
-                  Analysis results
+                  Результаты анализа
                 </span>
                   </div>
                 </div>
@@ -626,14 +666,40 @@ Filters: ${filtersText}
                     </Card>
                 )}
 
+                {/*{aiSummary && (*/}
+                {/*    <Card className="bg-zinc-900/70 border-zinc-700 p-4">*/}
+                {/*      <p className="text-xs text-zinc-500 mb-1">*/}
+                {/*        Итог от AI ассистента*/}
+                {/*      </p>*/}
+                {/*      <p className="text-sm text-zinc-100 whitespace-pre-wrap">*/}
+                {/*        {aiSummary}*/}
+                {/*      </p>*/}
+                {/*    </Card>*/}
+                {/*)}*/}
+
+                {/*{rawResponse && (*/}
+                {/*    <Card className="bg-zinc-900/70 border-zinc-800 p-4">*/}
+                {/*      <details>*/}
+                {/*        <summary className="cursor-pointer text-xs text-zinc-500 mb-2">*/}
+                {/*          Показать полный JSON-ответ сервера*/}
+                {/*        </summary>*/}
+                {/*        <div className="mt-3 max-h-64 overflow-auto rounded-lg bg-zinc-950/80 border border-zinc-800 p-3">*/}
+                {/*    <pre className="text-[11px] leading-snug text-zinc-400">*/}
+                {/*      {JSON.stringify(rawResponse, null, 2)}*/}
+                {/*    </pre>*/}
+                {/*        </div>*/}
+                {/*      </details>*/}
+                {/*    </Card>*/}
+                {/*)}*/}
+
                 {results && (
                     <>
-                      {/* USER CHOICE */}
+                      {/* Ваш выбор */}
                       <Card className="bg-zinc-900/50 border-zinc-800 p-6">
                         <div className="flex items-start justify-between mb-4">
                           <div>
                             <Badge className="bg-zinc-800 text-zinc-400 border-0 mb-3">
-                              Your Choice
+                              Ваш выбор
                             </Badge>
                             <h3 className="text-xl text-zinc-100 mb-1">
                               {results.original.name}
@@ -660,7 +726,7 @@ Filters: ${filtersText}
                         </div>
                       </Card>
 
-                      {/* AI RECOMMENDATIONS */}
+                      {/* AI рекомендует */}
                       {results.alternatives.length > 0 ? (
                           <>
                             <div className="space-y-4">
@@ -668,13 +734,13 @@ Filters: ${filtersText}
                                 <div className="flex items-center gap-2">
                                   <Sparkles className="size-5 text-blue-400" />
                                   <h3 className="text-xl text-zinc-100">
-                                    AI Recommends
+                                    AI рекомендует
                                   </h3>
                                 </div>
                                 {selectedFilters.length > 0 && (
                                     <div className="flex items-center gap-2">
                             <span className="text-sm text-zinc-500">
-                              Filters:
+                              Фильтры:
                             </span>
                                       {selectedFilters.map((filterId) => {
                                         const filter = filters.find(
@@ -706,7 +772,7 @@ Filters: ${filtersText}
                                         <div className="flex items-center gap-2 mb-4">
                                           <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
                                             <Sparkles className="size-3 mr-1" />
-                                            Best Option
+                                            Лучший вариант
                                           </Badge>
                                           {alt.filterMatch && (
                                               <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
@@ -721,7 +787,9 @@ Filters: ${filtersText}
                                         <h4 className="text-xl text-zinc-100 mb-1">
                                           {alt.name}
                                         </h4>
-                                        <p className="text-zinc-400 mb-2">{alt.items}</p>
+                                        <p className="text-zinc-400 mb-2">
+                                          {alt.items}
+                                        </p>
                                         {alt.extraBenefit && (
                                             <p className="text-sm text-green-400">
                                               ✨ {alt.extraBenefit}
@@ -784,19 +852,19 @@ Filters: ${filtersText}
                                               })
                                           }
                                       >
-                                        Choose
+                                        Выбрать
                                       </Button>
                                     </div>
                                   </Card>
                               ))}
                             </div>
 
-                            {/* Savings Summary */}
+                            {/* Summary */}
                             <Card className="bg-gradient-to-br from-green-950/40 to-green-900/20 border-green-800/40 p-6">
                               <div className="flex items-center justify-between">
                                 <div>
                                   <p className="text-sm text-green-400 mb-1">
-                                    💰 Your savings
+                                    💰 Ваша экономия
                                   </p>
                                   <p className="text-2xl text-green-300">
                                     +{results.alternatives[0].savings} € (
@@ -805,7 +873,7 @@ Filters: ${filtersText}
                                 </div>
                                 <div className="text-right">
                                   <p className="text-sm text-zinc-400 mb-1">
-                                    Estimated yearly savings
+                                    За год вы сэкономите
                                   </p>
                                   <p className="text-xl text-zinc-200">
                                     ~
@@ -823,8 +891,8 @@ Filters: ${filtersText}
                       ) : (
                           <Card className="bg-zinc-900/70 border-zinc-700 p-6">
                             <p className="text-sm text-zinc-300 text-center">
-                              AI couldn’t find better alternatives, but you can modify
-                              your budget or category and try again.
+                              AI не нашёл альтернатив с лучшей ценой, но вы можете
+                              изменить категорию или бюджет и попробовать ещё раз.
                             </p>
                           </Card>
                       )}
@@ -835,7 +903,7 @@ Filters: ${filtersText}
                             variant="outline"
                             className="border-zinc-700 bg-zinc-900/50 hover:bg-zinc-800 text-zinc-100"
                         >
-                          Try another category
+                          Попробовать другую категорию
                         </Button>
                       </div>
                     </>
@@ -843,30 +911,30 @@ Filters: ${filtersText}
               </div>
           )}
 
-          {/* CART */}
+          {/* Корзина */}
           {currentStep === "cart" && (
               <div className="space-y-8 animate-in fade-in duration-500">
                 <div className="text-center space-y-2">
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30">
                     <ShoppingCart className="size-4 text-green-400" />
-                    <span className="text-sm text-green-400">Your Cart</span>
+                    <span className="text-sm text-green-400">Ваша корзина</span>
                   </div>
                 </div>
 
                 {cart.length === 0 ? (
                     <Card className="bg-zinc-900/50 border-zinc-800 p-12 text-center">
                       <ShoppingCart className="size-12 text-zinc-600 mx-auto mb-4" />
-                      <p className="text-zinc-400 mb-4">Your cart is empty</p>
+                      <p className="text-zinc-400 mb-4">Ваша корзина пуста</p>
                       <Button
                           onClick={() => setCurrentStep("search")}
                           className="bg-blue-600 hover:bg-blue-700 text-white"
                       >
-                        Start Searching
+                        Начать поиск
                       </Button>
                     </Card>
                 ) : (
                     <>
-                      {/* CART ITEMS */}
+                      {/* Cart Items */}
                       <div className="space-y-4">
                         {cart.map((item) => (
                             <Card
@@ -892,7 +960,7 @@ Filters: ${filtersText}
                                   <div className="flex items-center gap-2 mt-1">
                                     <TrendingDown className="size-4 text-green-400" />
                                     <span className="text-green-400">
-                              -{item.savings}€
+                              -{item.savings} €
                             </span>
                                     {item.savingsPercent && (
                                         <Badge className="bg-green-500/20 text-green-400 border-0 text-xs">
@@ -951,19 +1019,21 @@ Filters: ${filtersText}
                         ))}
                       </div>
 
-                      {/* SUMMARY */}
+                      {/* Summary */}
                       <Card className="bg-gradient-to-br from-green-950/40 to-green-900/20 border-green-800/40 p-6">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-sm text-green-400 mb-1">
-                              💰 Your total savings
+                              💰 Ваша экономия
                             </p>
                             <p className="text-2xl text-green-300">
                               +{totalSavings.toFixed(2)} €
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm text-zinc-400 mb-1">Total cost</p>
+                            <p className="text-sm text-zinc-400 mb-1">
+                              Общая стоимость
+                            </p>
                             <p className="text-xl text-zinc-200">
                               {totalCost.toFixed(2)} €
                             </p>
@@ -977,14 +1047,14 @@ Filters: ${filtersText}
                             variant="outline"
                             className="border-zinc-700 bg-zinc-900/50 hover:bg-zinc-800 text-zinc-100"
                         >
-                          Continue Shopping
+                          Продолжить покупки
                         </Button>
                         <Button
                             onClick={clearCart}
                             variant="outline"
                             className="border-red-700 bg-red-900/20 hover:bg-red-900/30 text-red-400"
                         >
-                          Clear Cart
+                          Очистить корзину
                         </Button>
                       </div>
                     </>
@@ -993,14 +1063,14 @@ Filters: ${filtersText}
           )}
         </div>
 
-        {/* Cart Notification */}
+        {/* Уведомление о добавлении в корзину */}
         {showCartNotification && (
             <div className="fixed bottom-4 right-4 z-50">
               <Card className="bg-green-500/10 border border-green-500/30 p-4 rounded-xl shadow-lg shadow-green-500/20">
                 <div className="flex items-center gap-3">
                   <ShoppingCart className="size-5 text-green-400" />
                   <p className="text-sm text-green-400">
-                    Item added to cart
+                    Товар добавлен в корзину
                   </p>
                 </div>
               </Card>
