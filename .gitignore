@@ -1,3 +1,7 @@
+# ============================
+# 🔥 FRONTEND (React, Vite, NodeJS)
+# ============================
+
 # Logs
 logs
 *.log
@@ -7,19 +11,53 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependencies
+node_modules/
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
+# Editor stuff
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?
-backend/back4
+
+# ============================
+# 🔥 BACKEND (.NET)
+# ============================
+
+# Build output
+bin/
+obj/
+
+# .NET user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# .NET build artifacts
+*.dll
+*.exe
+*.pdb
+*.cache
+*.mdb
+*.config
+*.deps.json
+*.runtimeconfig.json
+
+# ASP.NET publish output
+wwwroot/
+.publish/
+App_Data/
+
+# ============================
+# 🔥 OTHER
+# ============================
+
+# Ignore temp
+tmp/
+temp/
+
