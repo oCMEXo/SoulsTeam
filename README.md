@@ -1,9 +1,10 @@
 🌙 MoneyCouch — Full-Stack AI-Powered Assistant
 
 MoneyCouch is a full-stack project that blends a stylish dark-themed frontend with a powerful AI-driven backend.
-The system uses modern technologies to provide smart recommendations, structured financial insights, and a polished experience.
+The system uses modern technologies to provide smart recommendations, structured financial insights, and a polished user experience.
 
 ✨ Features
+
 🖥️ Frontend (React + TypeScript + Vite)
 
 🎨 Dark, modern UI
@@ -24,7 +25,7 @@ The system uses modern technologies to provide smart recommendations, structured
 
 🤖 Featherless AI API integration
 
-🧹 Strong JSON cleaning + validation
+🧹 Strong JSON cleaning and validation
 
 📡 Stable API endpoints
 
@@ -37,23 +38,28 @@ The system uses modern technologies to provide smart recommendations, structured
 📁 Project Structure
 
 SoulsTeam
-┣ 📦 backend/
-┃ ┗ TestApi/
-┃ ┣ Controllers/
-┃ ┣ Services/
-┃ ┣ Models/
-┃ ┗ Program.cs
-┣ 🎨 src/ (React frontend)
-┃ ┣ components/
-┃ ┣ pages/
-┃ ┣ App.tsx
-┃ ┗ main.tsx
-┣ 📂 public/
-┣ 📜 package.json
-┗ ⚡ vite.config.ts
+
+backend/TestApi/
+Controllers
+Services
+Models
+Program.cs
+
+src/ (React frontend)
+components
+pages
+App.tsx
+main.tsx
+
+public
+
+package.json
+
+vite.config.ts
 
 🧰 Technologies
-Frontend
+
+Frontend:
 
 ⚛️ React
 
@@ -65,9 +71,9 @@ Frontend
 
 🎛️ Modern component structure
 
-Backend
+Backend:
 
-🧩 .NET 9
+🧩 .NET 8
 
 🚀 C# Web API
 
@@ -78,89 +84,65 @@ Backend
 📘 Swagger documentation
 
 🚀 Getting Started
-🔧 1. Clone the repository
 
+Clone the repository:
 git clone https://github.com/oCMEXo/SoulsTeam
 
 cd SoulsTeam
 
-🖥️ Frontend Setup
+Frontend setup:
 
-📥 Install dependencies:
-npm install
+Install dependencies: npm install
 
-🖼️ Install icon library:
-npm install lucide-react
+Install icon library: npm install lucide-react
 
-▶️ Start development server:
-npm run dev
+Start development server: npm run dev
+Frontend runs at: http://localhost:5173
 
-Frontend starts at: http://localhost:5173
+Backend setup (.NET):
 
-🛠️ Backend Setup (.NET)
+Go to backend folder: cd backend/TestApi
 
-Go to the backend folder:
-cd backend/TestApi
+Restore dependencies: dotnet restore
 
-Restore dependencies:
-dotnet restore
-
-Run backend server:
-dotnet run
-
+Run backend: dotnet run
 Backend runs at: http://localhost:5032
 
 🌐 API Endpoints
-🤖 /ai/ask?prompt=...
 
-Sends a request to the AI and returns structured JSON.
+/ai/ask?prompt=...
+Returns structured AI-generated JSON.
 
-📜 /ai/history
+/ai/history
+Returns saved chat history from MongoDB.
 
-Returns chat history stored in MongoDB.
-
-📦 Example AI Response
-
-The AI returns:
+📦 Example AI Response includes:
 
 🧠 summary — quick explanation
 
-🛍️ original — main option user selected
+🛍️ original — main selected option
 
-🔄 alternatives — cheaper/better options with:
-
+🔄 alternatives — better or cheaper options with:
 💵 savings
-
 📉 savingsPercent
-
 ⭐ rating
-
 🎁 extraBenefit
-
 🚚 deliveryTime
-
-Backend ensures the JSON matches the expected structure.
 
 🔐 Environment Variables
 
 Create appsettings.json in backend/TestApi:
 
 {
-"Featherless": {
-"ApiKey": "YOUR_API_KEY",
-"Model": "MODEL_NAME"
-},
-"MongoDb": {
-"ConnectionString": "mongodb://localhost:27017",
-"DatabaseName": "SoulsTeamDb"
-}
+"Featherless": { "ApiKey": "YOUR_API_KEY", "Model": "MODEL_NAME" },
+"MongoDb": { "ConnectionString": "mongodb://localhost:27017", "DatabaseName": "SoulsTeamDb" }
 }
 
 📌 Project Status
 
-The project is fully working locally.
-Both backend and frontend communicate correctly.
-AI integration and JSON mapping work reliably.
+The project is fully functional locally.
+Frontend and backend communicate correctly.
+AI integration and JSON mapping are stable and reliable.
 
 🤝 Contributing
 
