@@ -1,10 +1,9 @@
 🌙 MoneyCouch — Full-Stack AI-Powered Assistant
 
 MoneyCouch is a full-stack project that blends a stylish dark-themed frontend with a powerful AI-driven backend.
-The system uses modern technologies to provide smart recommendations, structured financial insights, and a polished user experience.
+The system uses modern technologies to provide smart recommendations, structured financial insights, and a polished experience.
 
 ✨ Features
-
 🖥️ Frontend (React + TypeScript + Vite)
 
 🎨 Dark, modern UI
@@ -25,7 +24,7 @@ The system uses modern technologies to provide smart recommendations, structured
 
 🤖 Featherless AI API integration
 
-🧹 Strong JSON cleaning and validation
+🧹 Strong JSON cleaning + validation
 
 📡 Stable API endpoints
 
@@ -36,119 +35,159 @@ The system uses modern technologies to provide smart recommendations, structured
 🔐 CORS configured for frontend communication
 
 📁 Project Structure
-
 SoulsTeam
+┣ 📦 backend/
+┃ ┗ TestApi/
+┃ ┣ Controllers/
+┃ ┣ Services/
+┃ ┣ Models/
+┃ ┗ Program.cs
+┣ 🎨 src/ (React frontend)
+┃ ┣ components/
+┃ ┣ pages/
+┃ ┣ App.tsx
+┃ ┗ main.tsx
+┣ 📂 public/
+┣ 📜 package.json
+┗ ⚡ vite.config.ts
 
-backend/TestApi/
-Controllers
-Services
-Models
-Program.cs
+🔧 Requirements for Running MoneyCouch
 
-src/ (React frontend)
-components
-pages
-App.tsx
-main.tsx
+To successfully run this project, you must have the following installed:
 
-public
+🧩 1. Required Software
+✔ MUST HAVE:
 
-package.json
+Node.js v18+ or v20+
 
-vite.config.ts
+npm
 
-🧰 Technologies
+.NET SDK 8.0 or 9.0 (my backend uses net8.0)
 
-Frontend:
+MongoDB Community Server or MongoDB Atlas
 
-⚛️ React
+⭐ Optional but Recommended:
 
-⌨️ TypeScript
+Visual Studio Code / JetBrains Rider
 
-⚡ Vite
-
-🎨 lucide-react icons
-
-🎛️ Modern component structure
-
-Backend:
-
-🧩 .NET 8
-
-🚀 C# Web API
-
-🗄️ MongoDB
-
-🤖 Featherless AI
-
-📘 Swagger documentation
+Git
 
 🚀 Getting Started
-
-Clone the repository:
+🖥️ 1. Clone the repository
 git clone https://github.com/oCMEXo/SoulsTeam
-
 cd SoulsTeam
 
-Frontend setup:
+🎨 Frontend Setup
 
-Install dependencies: npm install
+📥 Install dependencies:
 
-Install icon library: npm install lucide-react
+npm install
 
-Start development server: npm run dev
-Frontend runs at: http://localhost:5173
 
-Backend setup (.NET):
+🖼️ Install icon library:
 
-Go to backend folder: cd backend/TestApi
+npm install lucide-react
 
-Restore dependencies: dotnet restore
 
-Run backend: dotnet run
-Backend runs at: http://localhost:5032
+▶️ Start development server:
 
-🌐 API Endpoints
+npm run dev
 
-/ai/ask?prompt=...
-Returns structured AI-generated JSON.
 
-/ai/history
-Returns saved chat history from MongoDB.
+Frontend will run at:
+➡ http://localhost:5173
 
-📦 Example AI Response includes:
+🛠️ Backend Setup (.NET)
 
-🧠 summary — quick explanation
+Move into backend folder:
 
-🛍️ original — main selected option
+cd backend/TestApi
 
-🔄 alternatives — better or cheaper options with:
-💵 savings
-📉 savingsPercent
-⭐ rating
-🎁 extraBenefit
-🚚 deliveryTime
 
-🔐 Environment Variables
+Restore packages:
 
-Create appsettings.json in backend/TestApi:
+dotnet restore
+
+
+Run backend:
+
+dotnet run
+
+
+Backend will run at:
+➡ http://localhost:5032
+
+or (Cloud Run):
+➡ http://0.0.0.0:8080
+
+🔐 Required appsettings.json
+
+Create:
+
+📄 backend/TestApi/appsettings.json
+
+Paste this:
 
 {
-"Featherless": { "ApiKey": "YOUR_API_KEY", "Model": "MODEL_NAME" },
-"MongoDb": { "ConnectionString": "mongodb://localhost:27017", "DatabaseName": "SoulsTeamDb" }
+  "Featherless": {
+    "ApiKey": "YOUR_API_KEY",
+    "Model": "MODEL_NAME"
+  },
+  "MongoDb": {
+    "ConnectionString": "mongodb://localhost:27017",
+    "DatabaseName": "SoulsTeamDb"
+  }
 }
+
+🌐 API Endpoints
+🤖 1. AI Request
+GET /ai/ask?prompt=your_text
+
+
+Returns structured JSON with:
+
+🧠 summary
+
+🛍️ original
+
+🔄 alternatives (with savings, rating, deliveryTime, etc.)
+
+📜 2. History
+GET /ai/history
+
+
+Returns chat history stored in MongoDB.
+
+📦 Example AI Response
+{
+  "summary": "...",
+  "original": { ... },
+  "alternatives": [
+    {
+      "name": "Burger King",
+      "price": "9.90",
+      "savings": "0.10",
+      "rating": 4.5
+    }
+  ]
+}
+
+
+Backend guarantees valid JSON structure.
 
 📌 Project Status
 
-The project is fully functional locally.
-Frontend and backend communicate correctly.
-AI integration and JSON mapping are stable and reliable.
+✔ Fully working locally
+✔ Frontend & backend communicate properly
+✔ AI integration stable
+✔ JSON parsing reliable
+✔ Mongo history optional (safe mode enabled)
 
 🤝 Contributing
 
-Ideas, improvements, and pull requests are welcome!
-Help improve UI, AI logic, or backend stability.
+Pull requests, ideas, and improvements are welcome!
+Help improve UI, AI logic, or backend performance.
 
 ⭐ Support the Project
 
-If you like SoulsTeam — give it a star on GitHub! ⭐
+If you like MoneyCouch, give the repository a ⭐ on GitHub!
